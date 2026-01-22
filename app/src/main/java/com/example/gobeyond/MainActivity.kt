@@ -12,6 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gobeyond.ui.theme.GoBeyondTheme
+import com.example.gobeyond.ui.main.MainScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.gobeyond.navigation.AppNavGraph
+import androidx.compose.foundation.layout.Box
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,13 +24,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GoBeyondTheme {
-                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+
+                Scaffold { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        AppNavGraph(navController)
+                    }
                 }
             }
+
         }
     }
 }
