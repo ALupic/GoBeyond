@@ -6,18 +6,15 @@ object FakeCountries{
     val countries = listOf(
         Country(
             id = "italy",
-            name = "Italy",
-            destinations = listOf("Rome", "Florence", "Venice")
+            name = "Italy"
         ),
         Country(
             id = "france",
-            name = "France",
-            destinations = listOf("Paris", "Nice", "Strasbourg")
+            name = "France"
         ),
         Country(
             id = "spain",
-            name = "Spain",
-            destinations = listOf("Madrid", "Barcelona", "Seville")
+            name = "Spain"
         ),
     )
 }

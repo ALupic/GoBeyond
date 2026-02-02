@@ -42,7 +42,7 @@ fun CountryScreen(
             )
         }
 
-        items(country.destinations) { destination ->
+        /*items(country.destinations) { destination ->
             Button(
                 onClick = {
                     onDestinationClick(destination)
@@ -53,7 +53,7 @@ fun CountryScreen(
             ) {
                 Text(destination)
             }
-        }
+        }*/
     }
 }
 

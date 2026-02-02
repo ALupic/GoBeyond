@@ -2,63 +2,37 @@ package com.example.gobeyond.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.example.gobeyond.ui.explore.CountryScreen
-import com.example.gobeyond.ui.explore.ExploreScreen
-import com.example.gobeyond.ui.explore.ListScreen
-import com.example.gobeyond.ui.explore.DestinationScreen
-import com.example.gobeyond.ui.main.MainScreen
+import com.example.gobeyond.ui.explore.CountryListScreen
+import com.example.gobeyond.ui.explore.CountryViewModel
 
 @Composable
-fun AppNavGraph(navController: NavHostController){
+fun AppNavGraph(
+    navController: NavHostController,
+    viewModel: CountryViewModel
+) {
     NavHost(
         navController = navController,
-        startDestination = Routes.MAIN
-    ){
-        composable(Routes.MAIN){
-            MainScreen(
-                onExploreClicked = {
-                    navController.navigate(Routes.EXPLORE)
-                },
-                onLoginClicked = {
-                    // TO DO
+        startDestination = "countries"
+    ) {
+
+        composable("countries") {
+            CountryListScreen(
+                viewModel = viewModel,
+                onCountryClick = { countryId ->
+                    navController.navigate("destinations/$countryId")
                 }
             )
         }
 
-        composable(Routes.EXPLORE){
-            //ExploreScreen()
-            ExploreScreen(
-                onByCountryClicked = {
-                    navController.navigate(Routes.LIST)
-                }
+        composable("destinations/{countryId}") { backStackEntry ->
+            val countryId = backStackEntry.arguments?.getString("countryId")
+
+            // TEMP placeholder checkpoint
+            androidx.compose.material3.Text(
+                text = "Destinations for $countryId"
             )
-        }
-
-        composable(Routes.LIST){
-            //ExploreScreen()
-            ListScreen{ countryId ->
-                navController.navigate(Routes.country(countryId))
-            }
-        }
-
-        composable(route = Routes.COUNTRY, arguments = listOf(navArgument("countryId"){
-            type = NavType.StringType
-        })) { backStackEntry ->
-            val countryId = backStackEntry.arguments?.getString("countryId")!!
-
-            CountryScreen(countryId = countryId, onDestinationClick = {destinationId -> navController.navigate(Routes.destination(destinationId))})
-        }
-
-        composable(route = Routes.DESTINATION, arguments = listOf(navArgument("destinationId"){
-            type = NavType.StringType
-        })){ backStackEntry ->
-            val destinationId = backStackEntry.arguments?.getString("destinationId")!!
-
-            DestinationScreen(destinationId = destinationId)
         }
     }
 }
