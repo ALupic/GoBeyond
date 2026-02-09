@@ -1,11 +1,17 @@
 package com.example.gobeyond.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.gobeyond.ui.data.AppDatabaseProvider
+import com.example.gobeyond.ui.data.DestinationRepository
 import com.example.gobeyond.ui.explore.CountryListScreen
 import com.example.gobeyond.ui.explore.CountryViewModel
+import com.example.gobeyond.ui.explore.DestinationListScreen
+import com.example.gobeyond.ui.explore.DestinationViewModel
 
 @Composable
 fun AppNavGraph(
@@ -27,12 +33,16 @@ fun AppNavGraph(
         }
 
         composable("destinations/{countryId}") { backStackEntry ->
-            val countryId = backStackEntry.arguments?.getString("countryId")
+            val countryId = backStackEntry.arguments?.getString("countryId") ?: ""
 
-            // TEMP placeholder checkpoint
-            androidx.compose.material3.Text(
-                text = "Destinations for $countryId"
-            )
+            val db = AppDatabaseProvider.createDatabase(LocalContext.current)
+            val repository = DestinationRepository(db.destinationDao())
+
+            val viewModel = remember {
+                DestinationViewModel(repository, countryId)
+            }
+
+            DestinationListScreen(viewModel)
         }
     }
 }

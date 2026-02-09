@@ -24,6 +24,7 @@ import com.example.gobeyond.ui.data.CountryRepository
 import com.example.gobeyond.ui.explore.CountryListScreen
 import com.example.gobeyond.ui.explore.CountryViewModel
 import com.example.gobeyond.ui.model.Country
+import com.example.gobeyond.ui.model.Destination
 import kotlinx.coroutines.launch
 
 
@@ -39,7 +40,15 @@ class MainActivity : ComponentActivity() {
 
             // Insert test country
             db.countryDao().insert(
-                Country("greece", "Greece")
+                Country("italy", "Italy")
+            )
+
+            db.destinationDao().insert(
+                Destination("rome", "Rome", "italy")
+            )
+
+            db.destinationDao().insert(
+                Destination("florence", "Florence", "italy")
             )
 
             // Read all countries
