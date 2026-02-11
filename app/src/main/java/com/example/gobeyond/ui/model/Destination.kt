@@ -3,8 +3,9 @@ package com.example.gobeyond.ui.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "countries")
-data class Country(
+@Entity(tableName = "destinations")
+data class Destination(
     @PrimaryKey val id: String,
-    val name: String
+    val name: String,
+    val countryId: String
 )

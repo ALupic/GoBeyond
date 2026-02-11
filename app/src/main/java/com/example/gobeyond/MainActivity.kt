@@ -16,22 +16,61 @@ import com.example.gobeyond.ui.main.MainScreen
 import androidx.navigation.compose.rememberNavController
 import com.example.gobeyond.navigation.AppNavGraph
 import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.remember
+
+import androidx.lifecycle.lifecycleScope
+import com.example.gobeyond.ui.data.AppDatabaseProvider
+import com.example.gobeyond.ui.data.CountryRepository
+import com.example.gobeyond.ui.explore.CountryListScreen
+import com.example.gobeyond.ui.explore.CountryViewModel
+import com.example.gobeyond.ui.model.Country
+import com.example.gobeyond.ui.model.Destination
+import kotlinx.coroutines.launch
+
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            GoBeyondTheme {
-                val navController = rememberNavController()
 
-                Scaffold { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        AppNavGraph(navController)
-                    }
-                }
+        val db = AppDatabaseProvider.createDatabase(applicationContext)
+
+        lifecycleScope.launch {
+
+            // Insert test country
+            db.countryDao().insert(
+                Country("italy", "Italy")
+            )
+
+            db.destinationDao().insert(
+                Destination("rome", "Rome", "italy")
+            )
+
+            db.destinationDao().insert(
+                Destination("florence", "Florence", "italy")
+            )
+
+            // Read all countries
+            val countries = db.countryDao().getAllCountries()
+
+            println("ROOM COUNTRIES = $countries")
+        }
+
+        setContent {
+            val db = AppDatabaseProvider.createDatabase(applicationContext)
+            val repository = CountryRepository(db.countryDao())
+
+            val navController = rememberNavController()
+
+            val viewModel = remember {
+                CountryViewModel(repository)
             }
+
+            AppNavGraph(
+                navController = navController,
+                viewModel = viewModel
+            )
 
         }
     }
