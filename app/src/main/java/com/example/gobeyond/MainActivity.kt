@@ -58,20 +58,21 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val db = AppDatabaseProvider.createDatabase(applicationContext)
-            val repository = CountryRepository(db.countryDao())
+            GoBeyondTheme {
+                val db = AppDatabaseProvider.createDatabase(applicationContext)
+                val repository = CountryRepository(db.countryDao())
 
-            val navController = rememberNavController()
+                val navController = rememberNavController()
 
-            val viewModel = remember {
-                CountryViewModel(repository)
+                val viewModel = remember {
+                    CountryViewModel(repository)
+                }
+
+                AppNavGraph(
+                    navController = navController,
+                    viewModel = viewModel
+                )
             }
-
-            AppNavGraph(
-                navController = navController,
-                viewModel = viewModel
-            )
-
         }
     }
 }
