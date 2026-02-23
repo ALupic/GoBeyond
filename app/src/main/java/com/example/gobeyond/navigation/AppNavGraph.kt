@@ -23,6 +23,12 @@ import com.example.gobeyond.ui.explore.CountryListScreen
 import com.example.gobeyond.ui.explore.CountryViewModel
 import com.example.gobeyond.ui.explore.DestinationListScreen
 import com.example.gobeyond.ui.explore.DestinationViewModel
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 
 
 @Composable
@@ -46,7 +52,12 @@ fun AppNavGraph(
                         }
                     },
                     label = {Text("Explore")},
-                    icon = {}
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "Explore"
+                        )
+                    }
                 )
 
                 NavigationBarItem(
@@ -57,7 +68,12 @@ fun AppNavGraph(
                         }
                     },
                     label = {Text("Location")},
-                    icon = {}
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.LocationOn,
+                            contentDescription = "Location"
+                        )
+                    }
                 )
 
                 NavigationBarItem(
@@ -68,7 +84,12 @@ fun AppNavGraph(
                         }
                     },
                     label = {Text("Blog")},
-                    icon = {}
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Article,
+                            contentDescription = "Blog"
+                        )
+                    }
                 )
 
                 NavigationBarItem(
@@ -79,7 +100,12 @@ fun AppNavGraph(
                         }
                     },
                     label = {Text("Account")},
-                    icon = {}
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Person,
+                            contentDescription = "Account"
+                        )
+                    }
                 )
             }
         }
