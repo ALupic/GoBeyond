@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.gobeyond.ui.model.Destination
+import com.example.gobeyond.ui.theme.GoBeyondTheme
 
 @Composable
 fun DestinationListScreen(
@@ -37,5 +39,23 @@ fun DestinationListScreen(
                     .padding(16.dp)
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DestinationListPreview() {
+
+    val fakeDestinations = listOf(
+        Destination("rome", "Rome", "italy"),
+        Destination("florence", "Florence", "italy"),
+        Destination("venice", "Venice", "italy")
+    )
+
+    GoBeyondTheme {
+        DestinationListScreen(
+            destinations = fakeDestinations,
+            onDestinationClick = {}
+        )
     }
 }

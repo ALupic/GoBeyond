@@ -10,7 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.gobeyond.ui.model.Country
+import com.example.gobeyond.ui.theme.GoBeyondTheme
 
 @Composable
 fun CountryListScreen(
@@ -25,7 +28,7 @@ fun CountryListScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        Text("Explore Countriesssss", modifier = Modifier.padding(8.dp))
+        Text("Explore Countries", modifier = Modifier.padding(8.dp))
 
         LazyColumn {
             items(countries) { country ->
@@ -43,5 +46,37 @@ fun CountryListScreen(
             }
         }
 
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CountryListPreview() {
+
+    val fakeCountries = listOf(
+        Country("italy", "Italy"),
+        Country("spain", "Spain"),
+        Country("france", "France")
+    )
+
+    GoBeyondTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+        ) {
+            Text("Explore Countries", modifier = Modifier.padding(8.dp))
+
+            fakeCountries.forEach { country ->
+                Text(
+                    text = country.name,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                )
+            }
+        }
     }
 }
