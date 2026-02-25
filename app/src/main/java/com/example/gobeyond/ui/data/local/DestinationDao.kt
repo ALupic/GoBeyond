@@ -13,6 +13,9 @@ interface DestinationDao {
     @Query("SELECT * FROM destinations WHERE countryId = :countryId")
     fun getAllDestinationsForCountry(countryId: String): Flow<List<Destination>>
 
+    @Query("SELECT * FROM destinations WHERE countryId = :countryId")
+    suspend fun getAllDestinationsForCountryOnce(countryId: String): List<Destination>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(destination: Destination)
 }

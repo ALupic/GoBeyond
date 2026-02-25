@@ -34,28 +34,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val db = AppDatabaseProvider.createDatabase(applicationContext)
+        //val db = AppDatabaseProvider.createDatabase(applicationContext)
 
-        lifecycleScope.launch {
-
-            // Insert test country
-            db.countryDao().insert(
-                Country("italy", "Italy")
-            )
-
-            db.destinationDao().insert(
-                Destination("rome", "Rome", "italy")
-            )
-
-            db.destinationDao().insert(
-                Destination("florence", "Florence", "italy")
-            )
-
-            // Read all countries
-            val countries = db.countryDao().getAllCountries()
-
-            println("ROOM COUNTRIES = $countries")
-        }
 
         setContent {
             GoBeyondTheme {

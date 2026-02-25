@@ -21,6 +21,8 @@ class CountryRepository(
             dao.insert(Country("italy", "Italy"))
             dao.insert(Country("greece", "Greece"))
             dao.insert(Country("france", "France"))
+            dao.insert(Country("portugal", "Portugal"))
+            dao.insert(Country("spain", "Spain"))
         }
     }
 
