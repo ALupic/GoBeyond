@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gobeyond.navigation.AppNavGraph
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.remember
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 import androidx.lifecycle.lifecycleScope
 import com.example.gobeyond.ui.data.AppDatabaseProvider
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
