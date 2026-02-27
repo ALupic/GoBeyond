@@ -1,5 +1,6 @@
 package com.example.gobeyond.navigation
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -29,6 +30,9 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.ui.unit.dp
 
 
 @Composable
@@ -42,7 +46,10 @@ fun AppNavGraph(
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(
+                //modifier = Modifier.height(115.dp),
+                containerColor = MaterialTheme.colorScheme.surface
+            ) {
                 NavigationBarItem(
                     selected = currentRoute == "countries",
                     onClick = {
@@ -51,13 +58,20 @@ fun AppNavGraph(
                             launchSingleTop = true
                         }
                     },
-                    label = {Text("Explore")},
+                    label = {Text("Explore", style = MaterialTheme.typography.labelMedium)},
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Search,
                             contentDescription = "Explore"
                         )
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                        selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                        indicatorColor = MaterialTheme.colorScheme.secondary
+                    )
                 )
 
                 NavigationBarItem(
@@ -67,13 +81,20 @@ fun AppNavGraph(
                             launchSingleTop = true
                         }
                     },
-                    label = {Text("Location")},
+                    label = {Text("Location", style = MaterialTheme.typography.labelMedium)},
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.LocationOn,
                             contentDescription = "Location"
                         )
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                        selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                        indicatorColor = MaterialTheme.colorScheme.secondary
+                    )
                 )
 
                 NavigationBarItem(
@@ -83,13 +104,20 @@ fun AppNavGraph(
                             launchSingleTop = true
                         }
                     },
-                    label = {Text("Blog")},
+                    label = {Text("Blog", style = MaterialTheme.typography.labelMedium)},
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Article,
                             contentDescription = "Blog"
                         )
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                        selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                        indicatorColor = MaterialTheme.colorScheme.secondary
+                    )
                 )
 
                 NavigationBarItem(
@@ -99,13 +127,20 @@ fun AppNavGraph(
                             launchSingleTop = true
                         }
                     },
-                    label = {Text("Account")},
+                    label = {Text("Account", style = MaterialTheme.typography.labelMedium)},
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Person,
                             contentDescription = "Account"
                         )
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                        selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                        indicatorColor = MaterialTheme.colorScheme.secondary
+                    )
                 )
             }
         }

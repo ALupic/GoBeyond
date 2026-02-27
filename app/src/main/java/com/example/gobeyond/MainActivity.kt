@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gobeyond.navigation.AppNavGraph
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.remember
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 import androidx.lifecycle.lifecycleScope
 import com.example.gobeyond.ui.data.AppDatabaseProvider
@@ -31,31 +32,12 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val db = AppDatabaseProvider.createDatabase(applicationContext)
+        //val db = AppDatabaseProvider.createDatabase(applicationContext)
 
-        lifecycleScope.launch {
-
-            // Insert test country
-            db.countryDao().insert(
-                Country("italy", "Italy")
-            )
-
-            db.destinationDao().insert(
-                Destination("rome", "Rome", "italy")
-            )
-
-            db.destinationDao().insert(
-                Destination("florence", "Florence", "italy")
-            )
-
-            // Read all countries
-            val countries = db.countryDao().getAllCountries()
-
-            println("ROOM COUNTRIES = $countries")
-        }
 
         setContent {
             GoBeyondTheme {

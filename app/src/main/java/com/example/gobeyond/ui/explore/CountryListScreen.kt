@@ -1,5 +1,14 @@
 package com.example.gobeyond.ui.explore
 
+import androidx.annotation.DrawableRes
+import com.example.gobeyond.R
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,24 +37,68 @@ fun CountryListScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        Text("Explore Countries", modifier = Modifier.padding(8.dp))
-
-        LazyColumn {
-            items(countries) { country ->
-
-                Text(
-                    text = country.name,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onCountryClick(country.id)
-                        }
-                        .padding(12.dp)
-                )
-            }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(vertical = 32.dp, horizontal = 16.dp)
+        ) {
+            Text(
+                text = "Explore Countries",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
 
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+
+            items(countries){ country ->
+
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = CardDefaults.cardElevation(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable{onCountryClick(country.id)}
+                ){
+                    Column {
+                        Image(
+                            painter = painterResource(id = getCountryImage(country.id)),
+                            contentDescription = country.name,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                        )
+
+                        Text(
+                            text = country.name,
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+
+            }
+
+        }
+
+    }
+}
+
+@DrawableRes
+fun getCountryImage(countryId: String): Int{
+    return when (countryId) {
+        "italy" -> R.drawable.ventimiglia
+        "greece" -> R.drawable.symi
+        "france" -> R.drawable.carcassonne
+        "spain" -> R.drawable.masca
+        "portugal" -> R.drawable.obidos
+        else -> R.drawable.ventimiglia
     }
 }
 

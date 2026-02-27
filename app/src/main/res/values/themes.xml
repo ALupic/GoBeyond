@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.GoBeyond" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.GoBeyond.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FF09072F</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/gemsofeurope_dark</item>
+        <item name="postSplashScreenTheme">@style/Theme.GoBeyond</item>
+    </style>
 </resources>
