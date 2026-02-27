@@ -37,7 +37,18 @@ fun CountryListScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        Text("Explore Countries", modifier = Modifier.padding(8.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(vertical = 32.dp, horizontal = 16.dp)
+        ) {
+            Text(
+                text = "Explore Countries",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
@@ -45,7 +56,10 @@ fun CountryListScreen(
 
                 Card(
                     shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(8.dp),
+                    elevation = CardDefaults.cardElevation(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable{onCountryClick(country.id)}
