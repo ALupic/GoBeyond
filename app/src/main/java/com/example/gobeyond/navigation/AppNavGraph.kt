@@ -33,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
@@ -48,7 +49,7 @@ fun AppNavGraph(
         bottomBar = {
             NavigationBar(
                 //modifier = Modifier.height(115.dp),
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.primary
             ) {
                 NavigationBarItem(
                     selected = currentRoute == "countries",
@@ -154,32 +155,35 @@ fun AppNavGraph(
             composable("countries") {
                 CountryListScreen(
                     viewModel = viewModel,
-                    onCountryClick = { countryId ->
-                        navController.navigate("destinations/$countryId")
+                    onCountryClick = { countryId, countryName ->
+                        navController.navigate("destinations/$countryId/$countryName")
                     }
                 )
             }
 
             composable(
-                route = "destinations/{countryId}",
+                route = "destinations/{countryId}/{countryName}",
                 arguments = listOf(
-                    navArgument("countryId") { defaultValue = "" }
+                    navArgument("countryId") { defaultValue = "" },
+                    navArgument("countryName") { defaultValue = "" }
                 )
             ) { backStackEntry ->
 
                 val countryId = backStackEntry.arguments?.getString("countryId") ?: ""
+                val countryName = backStackEntry.arguments?.getString("countryName") ?: ""
 
                 val db = AppDatabaseProvider.createDatabase(LocalContext.current)
                 val repository = DestinationRepository(db.destinationDao())
 
-                val viewModel = remember {
+                val viewModel = remember(countryId) {
                     DestinationViewModel(repository, countryId)
                 }
 
-                val destinations by viewModel.destinations.collectAsState()
+                //val destinations by viewModel.destinations.collectAsState()
 
                 DestinationListScreen(
-                    destinations = destinations,
+                    viewModel = viewModel,
+                    countryName = countryName,
                     onDestinationClick = { destinationName ->
                         navController.navigate("destination/$destinationName")
                     }
