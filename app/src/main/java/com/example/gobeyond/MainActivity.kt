@@ -18,6 +18,7 @@ import com.example.gobeyond.navigation.AppNavGraph
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.remember
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 
 import androidx.lifecycle.lifecycleScope
 import com.example.gobeyond.ui.data.AppDatabaseProvider
@@ -35,6 +36,11 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
+        WindowCompat.getInsetsController(window, window.decorView)
+            .isAppearanceLightStatusBars = false
 
         //val db = AppDatabaseProvider.createDatabase(applicationContext)
 

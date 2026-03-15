@@ -27,7 +27,7 @@ import com.example.gobeyond.ui.theme.GoBeyondTheme
 @Composable
 fun CountryListScreen(
     viewModel: CountryViewModel,
-    onCountryClick: (String) -> Unit
+    onCountryClick: (String, String) -> Unit
 ) {
     val countries by viewModel.countries.collectAsState()
 
@@ -35,12 +35,13 @@ fun CountryListScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
+            //.padding(16.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.primary)
+                //.statusBarsPadding()
                 .padding(vertical = 32.dp, horizontal = 16.dp)
         ) {
             Text(
@@ -50,7 +51,10 @@ fun CountryListScreen(
             )
         }
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn(modifier = Modifier.padding(horizontal = 25.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
             items(countries){ country ->
 
@@ -58,11 +62,11 @@ fun CountryListScreen(
                     shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(12.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface
+                        containerColor = MaterialTheme.colorScheme.primary
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable{onCountryClick(country.id)}
+                        .clickable{onCountryClick(country.id, country.name)}
                 ){
                     Column {
                         Image(
@@ -77,7 +81,7 @@ fun CountryListScreen(
                         Text(
                             text = country.name,
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(16.dp)
                         )
                     }
@@ -88,6 +92,7 @@ fun CountryListScreen(
         }
 
     }
+    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @DrawableRes
