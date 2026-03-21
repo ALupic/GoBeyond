@@ -59,6 +59,14 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    implementation("androidx.compose.ui:ui:1.0.3")
+    implementation("androidx.activity:activity-compose:1.3.1")
+
+    implementation("androidx.preference:preference-ktx:1.2.1")
+
+    implementation("org.maplibre.gl:android-sdk:13.0.1")
+
+
     implementation("androidx.room:room-runtime:2.7.0")
     implementation("androidx.room:room-ktx:2.7.0")
     ksp("androidx.room:room-compiler:2.7.0")

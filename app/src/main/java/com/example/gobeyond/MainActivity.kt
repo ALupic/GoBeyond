@@ -1,6 +1,7 @@
 package com.example.gobeyond
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,11 +30,17 @@ import com.example.gobeyond.ui.model.Country
 import com.example.gobeyond.ui.model.Destination
 import kotlinx.coroutines.launch
 
+import org.maplibre.android.MapLibre
+import org.maplibre.android.WellKnownTileServer
 
+//import org.osmdroid.config.Configuration
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
+
+        val ctx = applicationContext
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -43,6 +50,12 @@ class MainActivity : ComponentActivity() {
             .isAppearanceLightStatusBars = false
 
         //val db = AppDatabaseProvider.createDatabase(applicationContext)
+
+        MapLibre.getInstance(
+            this,
+            null, // no API key needed
+            WellKnownTileServer.MapLibre
+        )
 
 
         setContent {
