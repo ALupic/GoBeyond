@@ -34,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.gobeyond.ui.explore.ExploreScreen
 
 
 @Composable
@@ -205,7 +206,7 @@ fun AppNavGraph(
             }
 
             composable("blog"){
-                Text("Blog")
+                ExploreScreen()
             }
 
             composable("account"){
