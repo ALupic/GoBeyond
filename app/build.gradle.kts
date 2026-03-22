@@ -66,6 +66,8 @@ dependencies {
 
     implementation("org.maplibre.gl:android-sdk:13.0.1")
 
+    implementation("androidx.compose.foundation:foundation")
+
 
     implementation("androidx.room:room-runtime:2.7.0")
     implementation("androidx.room:room-ktx:2.7.0")
