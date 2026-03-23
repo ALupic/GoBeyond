@@ -19,9 +19,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.gobeyond.ui.data.AppDatabaseProvider
 import com.example.gobeyond.ui.data.DestinationRepository
-import com.example.gobeyond.ui.destinations.DestinationScreen
 import com.example.gobeyond.ui.explore.CountryListScreen
 import com.example.gobeyond.ui.explore.CountryViewModel
+import com.example.gobeyond.ui.explore.DestinationScreen
 import com.example.gobeyond.ui.explore.DestinationListScreen
 import com.example.gobeyond.ui.explore.DestinationViewModel
 import androidx.compose.material.icons.Icons
