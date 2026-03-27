@@ -75,11 +75,11 @@ fun DestinationListScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onDestinationClick(destination.name) }
+                        .clickable { onDestinationClick(destination.id) }
                 ){
                     Column {
                         Image(
-                            painter = painterResource(id = getDestinationImage(destination.id)),
+                            painter = painterResource(destination.imageRes),
                             contentDescription = destination.name,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -108,6 +108,7 @@ fun DestinationListScreen(
 
 }
 
+/*
 @DrawableRes
 fun getDestinationImage(destinationId: String): Int{
     return when (destinationId) {
@@ -147,17 +148,17 @@ fun getDestinationImage(destinationId: String): Int{
 
         else -> R.drawable.gemsofeurope_dark
     }
-}
+}*/
 
 @Preview(showBackground = true)
 @Composable
 fun DestinationListPreview() {
 
-    val fakeDestinations = listOf(
+    /*val fakeDestinations = listOf(
         Destination("rome", "Rome", "italy"),
         Destination("florence", "Florence", "italy"),
         Destination("venice", "Venice", "italy")
-    )
+    )*/
 
     /*GoBeyondTheme {
         DestinationListScreen(

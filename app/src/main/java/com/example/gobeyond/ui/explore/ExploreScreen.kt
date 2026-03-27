@@ -165,7 +165,7 @@ fun CategoriesContent() {
                 .fillMaxSize()
                 .padding(top = 100.dp)
         ) {
-            items(listOf("Beach Towns", "Mountain Villages", "Food Hubs", "Historic Sites", "Old Towns")) { category ->
+            items(listOf("Beach Escapes", "Mountain Hideaways", "Timeless Towns", "Gourmet Trails", "Striking Landscapes")) { category ->
                 Text(
                     text = category,
                     modifier = Modifier.padding(16.dp),
