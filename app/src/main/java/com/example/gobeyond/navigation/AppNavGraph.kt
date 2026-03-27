@@ -32,9 +32,13 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gobeyond.ui.explore.ExploreScreen
+import com.example.gobeyond.ui.model.Destination
 
 
 @Composable
@@ -185,20 +189,36 @@ fun AppNavGraph(
                 DestinationListScreen(
                     viewModel = viewModel,
                     countryName = countryName,
-                    onDestinationClick = { destinationName ->
-                        navController.navigate("destination/$destinationName")
+                    onDestinationClick = { destinationId ->
+                        navController.navigate("destination/$destinationId")
                     }
                 )
             }
 
             composable(
-                route = "destination/{name}",
-                arguments = listOf(
-                    navArgument("name") { defaultValue = "" }
-                )
+                route = "destination/{id}",
+                arguments = listOf(navArgument("id") { defaultValue = "" })
             ) { backStackEntry ->
-                val name = backStackEntry.arguments?.getString("name") ?: ""
-                DestinationScreen(destinationName = name)
+
+                val id = backStackEntry.arguments?.getString("id") ?: ""
+
+                val db = AppDatabaseProvider.createDatabase(LocalContext.current)
+                val repository = DestinationRepository(db.destinationDao())
+
+                var destination by remember { mutableStateOf<Destination?>(null) }
+                var allDestinations by remember { mutableStateOf<List<Destination>>(emptyList()) }
+
+                LaunchedEffect(id) {
+                    destination = repository.getDestinationById(id)
+                    allDestinations = repository.getAllDestinations() // <-- fetch all destinations
+                }
+
+                destination?.let { dest ->
+                    DestinationScreen(
+                        destination = dest,
+                        allDestinations = allDestinations // <-- pass full database
+                    )
+                }
             }
 
             composable("location"){

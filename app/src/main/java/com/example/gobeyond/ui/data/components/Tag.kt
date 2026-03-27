@@ -1,3 +1,5 @@
+package com.example.gobeyond.ui.data.components
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +18,6 @@ fun Tag(text: String, color: Color) {
         fontSize = 10.sp,
         modifier = Modifier
             .background(color, shape = RoundedCornerShape(10.dp))
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .padding(horizontal = 12.dp, vertical = 1.dp)
     )
 }
