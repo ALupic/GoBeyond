@@ -177,8 +177,9 @@ fun AppNavGraph(
                 val countryId = backStackEntry.arguments?.getString("countryId") ?: ""
                 val countryName = backStackEntry.arguments?.getString("countryName") ?: ""
 
-                val db = AppDatabaseProvider.createDatabase(LocalContext.current)
-                val repository = DestinationRepository(db.destinationDao())
+                val context = LocalContext.current
+                val db = AppDatabaseProvider.createDatabase(context)
+                val repository = DestinationRepository(db.destinationDao(), context)
 
                 val viewModel = remember(countryId) {
                     DestinationViewModel(repository, countryId)
@@ -202,8 +203,9 @@ fun AppNavGraph(
 
                 val id = backStackEntry.arguments?.getString("id") ?: ""
 
-                val db = AppDatabaseProvider.createDatabase(LocalContext.current)
-                val repository = DestinationRepository(db.destinationDao())
+                val context = LocalContext.current
+                val db = AppDatabaseProvider.createDatabase(context)
+                val repository = DestinationRepository(db.destinationDao(), context)
 
                 var destination by remember { mutableStateOf<Destination?>(null) }
                 var allDestinations by remember { mutableStateOf<List<Destination>>(emptyList()) }

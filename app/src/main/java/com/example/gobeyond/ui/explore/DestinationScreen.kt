@@ -46,6 +46,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import com.example.gobeyond.ui.model.Destination
 import kotlin.math.absoluteValue
 
@@ -324,8 +325,56 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
         val foodSection = "food" in tags
 
 
-        if(beachSection){
-            Row(
+
+
+        val context = LocalContext.current // <- get the context here
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Icon(Icons.Default.DirectionsBike, contentDescription = null, tint = Color(0xFF09072F))
+            Spacer(Modifier.width(8.dp))
+            Text("Activities", style = MaterialTheme.typography.titleLarge)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        val foodItems: List<Pair<String, String>> = destination.activitiesCarousel
+            .split(";")
+            .mapNotNull { item ->
+                val parts = item.split("|")
+                if (parts.size == 2) {
+                    val text = parts[0].trim()
+                    val imageUrl = parts[1].trim()
+                    text to imageUrl
+                } else null
+            }
+
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(foodItems) { item ->
+                val (text, imageUrl) = item
+                InfoCard(
+                    description = text,
+                    imageUrl = imageUrl
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Divider(
+            color = Color.LightGray,
+            thickness = 1.dp,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+            /*Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
@@ -377,10 +426,12 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
-        }
+            Spacer(modifier = Modifier.height(32.dp))*/
 
-        if(foodSection){
+
+        if (foodSection) {
+            val context = LocalContext.current // <- get the context here
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 16.dp)
@@ -392,37 +443,26 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            /*Text(
-                text = destination.mainText2,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )*/
-
-            val images = listOf(
-                destination.imageRes,
-                destination.imageRes,
-                destination.imageRes
-            )
-
-            val texts = listOf(
-                destination.headText,
-                destination.headText,
-                destination.headText
-            )
-
-            val cards = images.zip(texts)
-                .filter { (img, txt) ->
-                    img != 0 && txt.isNotBlank()
+            val foodItems: List<Pair<String, String>> = destination.foodCarousel
+                .split(";")
+                .mapNotNull { item ->
+                    val parts = item.split("|")
+                    if (parts.size == 2) {
+                        val text = parts[0].trim()
+                        val imageUrl = parts[1].trim()
+                        text to imageUrl
+                    } else null
                 }
 
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(cards) { (image, text) ->
-
+                items(foodItems) { item ->
+                    val (text, imageUrl) = item
                     InfoCard(
                         description = text,
-                        imageRes = image
+                        imageUrl = imageUrl
                     )
                 }
             }
@@ -434,8 +474,6 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
                 thickness = 1.dp,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-
-            //Spacer(modifier = Modifier.height(32.dp))
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -458,7 +496,7 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = destination.mainText2,
+            text = destination.goBeyondText,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
@@ -477,7 +515,7 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp) // distance from screen edge
                 .background(
-                    color = Color.LightGray,
+                    color = Color(0xfff2eeed),
                     shape = RoundedCornerShape(16.dp) // rounded corners
                 )
                 .padding(vertical = 24.dp) // vertical spacing inside the container
@@ -523,12 +561,15 @@ fun TagsSection(destination: Destination) {
     val tags = destination.tags.split(",")
 
     val tagDisplayNames = mapOf(
-        "beach" to "Beach Escapes",
+        "beach" to "Astonishing Beaches",
         "old town" to "Timeless Towns",
+        "ancient" to "Ancient Wonders",
         "nature" to "Nature & Outdoors",
         "mountain" to "Mountain Hideaways",
         "food" to "Gourmet Trails",
-        "landscape" to "Striking Landscapes"
+        "landscape" to "Striking Landscapes",
+        "island" to "Charming Islands",
+        "christmas" to "Christmas Markets"
     )
 
     FlowRow(
@@ -550,9 +591,13 @@ fun getTagColor(tag: String): Color {
         "beach" -> Color(0xFF09072F)     // Orange
             //.copy(alpha = 0.15f)
         "old town" -> Color(0xFF09072F)  // Brown
+        "ancient" -> Color(0xFF09072F)
         "nature" -> Color(0xFF09072F)    // Green
         "mountain" -> Color(0xFF09072F)  // Purple
         "food" -> Color(0xFF09072F)      // Red
+        "landscape" -> Color(0xFF09072F)
+        "island" -> Color(0xFF09072F)
+        "christmas" -> Color(0xFF09072F)
         else -> Color.Gray
     }
 }
@@ -709,24 +754,38 @@ fun ExploreMoreSection(
 @Composable
 fun InfoCard(
     description: String,
-    imageRes: Int
+    imageUrl: String
 ) {
     Column(
         modifier = Modifier
-            .width(240.dp)
+            .width(280.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(Color.White)
     ) {
-        Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .height(140.dp)
-                .fillMaxWidth()
-        )
 
-        Column(modifier = Modifier.padding(12.dp)) {
+        Box(
+            modifier = Modifier
+                .height(180.dp)
+                .fillMaxWidth()
+        ) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            // 🔵 Attached underline (overlayed on image)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .background(Color(0xFF09072F))
+            )
+        }
+
+        Column(modifier = Modifier.padding(2.dp)) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = description, maxLines = 16)
         }

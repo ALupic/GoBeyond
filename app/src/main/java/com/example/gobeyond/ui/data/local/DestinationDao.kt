@@ -24,4 +24,7 @@ interface DestinationDao {
 
     @Query("SELECT * FROM destinations")
     suspend fun getAllDestinations(): List<Destination>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(destinations: List<Destination>)
 }

@@ -29,7 +29,7 @@ fun MapLibreMap(
                     mapLibreMap.moveCamera(
                         org.maplibre.android.camera.CameraUpdateFactory.newLatLngZoom(
                             LatLng(lat, lon),
-                            12.0  // default zoom
+                            14.0  // default zoom
                         )
                     )
                 }

@@ -1,17 +1,12 @@
 package com.example.gobeyond.ui.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "destinations")
-data class Destination(
-    @PrimaryKey val id: String,
+data class DestinationJson(
+    val id: String,
     val name: String,
     val countryId: String,
-
     val lat: Double,
     val lon: Double,
-    val imageRes: Int,
+    val imageRes: String,
     val imageUrl1: String,
     val imageUrl2: String,
     val imageUrl3: String,
