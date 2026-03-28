@@ -23,7 +23,7 @@ class DestinationViewModel(
 
     init {
         viewModelScope.launch {
-            repository.seedDestinationsIfEmpty(countryId)
+            repository.syncDestinations()
         }
     }
 }
