@@ -16,11 +16,13 @@ data class Destination(
     val imageUrl2: String,
     val imageUrl3: String,
     val tags: String,
+    val description: String,
     val headText: String,
     val locationText: String,
     val mainText1: String,
     val mainText2: String,
     val activitiesCarousel: String,
     val foodCarousel: String,
-    val goBeyondText: String
+    val goBeyondText: String,
+    val guidebook: String
 )

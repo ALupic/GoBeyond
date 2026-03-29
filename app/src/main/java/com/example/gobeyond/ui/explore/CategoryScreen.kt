@@ -188,7 +188,7 @@ fun mapTagToCategory(tag: String): String {
         "Ancient" -> "Ancient Wonders"
         "Food" -> "Gourmet Trails"
         "Landscape" -> "Striking Landscapes"
-        "Island" -> "Charming Islands"
+        "Island" -> "Island Getaways"
         "Christmas" -> "Christmas Markets"
         else -> ""
     }

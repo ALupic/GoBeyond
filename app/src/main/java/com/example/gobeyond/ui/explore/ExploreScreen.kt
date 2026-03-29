@@ -18,6 +18,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,12 +31,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.gobeyond.ui.theme.GoBeyondTheme
 import com.example.gobeyond.R
+import com.example.gobeyond.ui.data.local.DestinationDao
 import com.example.gobeyond.ui.model.Category
+import com.example.gobeyond.ui.model.Destination
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ExploreScreen(navController: NavHostController){
+fun ExploreScreen(navController: NavHostController, destinationDao: DestinationDao){
 
     val pagerState = rememberPagerState(pageCount = { 2 })
     val scope = rememberCoroutineScope()
@@ -50,7 +55,7 @@ fun ExploreScreen(navController: NavHostController){
         ) { page ->
 
             when (page) {
-                0 -> DiscoverContent()
+                0 -> DiscoverContent(destinationDao = destinationDao, navController = navController)
                 1 -> CategoriesContent(navController = navController)
             }
         }
@@ -104,57 +109,64 @@ fun ExploreScreen(navController: NavHostController){
 }
 
 @Composable
-fun DiscoverContent() {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+fun DiscoverContent(destinationDao: DestinationDao, navController: NavHostController) {
 
-        Image(
-            painter = painterResource(id = R.drawable.noto),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+    val dailyDestination = produceState<Destination?>(initialValue = null) {
+        val allDestinations = destinationDao.getAllDestinations()
+        value = allDestinations.getDailyItem()
+    }.value
+
+    dailyDestination?.let { dest ->
+        val imageRes = dest.imageRes ?: R.drawable.noto
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.4f)
-                .align(Alignment.BottomCenter)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.Black.copy(alpha = 0.8f)
+            modifier = Modifier.fillMaxSize()
+                .fillMaxSize()
+                .clickable {
+                    // Navigate to destination detail screen
+                    navController.navigate("destination/${dest.id}")
+                }
+        ) {
+
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.4f)
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.8f)
+                            )
                         )
                     )
-                )
-        )
-
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(24.dp)
-        ) {
-            Text(
-                text = "Explore",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
             )
 
-            Text(
-                text = "Noto",
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.White
-            )
-
-            Text(
-                text = "Uncover Baroque palaces, ornate cathedral and coastal charms",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
-            )
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(24.dp)
+            ) {
+                Text("Explore", style = MaterialTheme.typography.bodyLarge, color = Color.White)
+                Text(dest.name, style = MaterialTheme.typography.headlineLarge, color = Color.White)
+                Text(dest.description, style = MaterialTheme.typography.bodyLarge, color = Color.White)
+            }
         }
     }
+}
+
+fun <T> List<T>.getDailyItem(): T {
+    val todaySeed = LocalDate.now().toEpochDay().toInt()
+    val random = Random(todaySeed)
+    return this[random.nextInt(this.size)]
 }
 
 @Composable
@@ -167,7 +179,7 @@ fun CategoriesContent(navController: NavHostController) {
         Category("Ancient Wonders", R.drawable.cat_ancient),
         Category("Gourmet Trails", R.drawable.cat_food),
         Category("Striking Landscapes", R.drawable.cat_landscape),
-        Category("Charming Islands", R.drawable.cat_island),
+        Category("Island Getaways", R.drawable.cat_island),
         Category("Christmas Markets", R.drawable.cat_christmas)
     )
 

@@ -154,7 +154,7 @@ fun AppNavGraph(
     ){ paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = "countries",
+            startDestination = "blog",
             modifier = Modifier.padding(paddingValues)
         ) {
 
@@ -235,7 +235,8 @@ fun AppNavGraph(
                 destination?.let { dest ->
                     DestinationScreen(
                         destination = dest,
-                        allDestinations = allDestinations // <-- pass full database
+                        allDestinations = allDestinations, // <-- pass full database
+                        navController = navController
                     )
                 }
             }
@@ -245,7 +246,16 @@ fun AppNavGraph(
             }
 
             composable("blog"){
-                ExploreScreen(navController = navController)
+                    backStackEntry ->
+
+                //val id = backStackEntry.arguments?.getString("id") ?: ""
+
+                val context = LocalContext.current
+                val db = AppDatabaseProvider.createDatabase(context)
+                val destinationDao = db.destinationDao()
+                //val repository = DestinationRepository(db.destinationDao(), context)
+
+                ExploreScreen(navController = navController, destinationDao = destinationDao)
             }
 
             composable("account"){

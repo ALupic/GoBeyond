@@ -2,6 +2,7 @@ package com.example.gobeyond.ui.explore
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -48,12 +49,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
 import com.example.gobeyond.ui.model.Destination
 import kotlin.math.absoluteValue
 
 //@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun DestinationScreen(destination: Destination, allDestinations: List<Destination>) {
+fun DestinationScreen(
+    destination: Destination,
+    allDestinations: List<Destination>,
+    navController: NavHostController
+) {
 
     // Scrollable column
     Column(
@@ -482,14 +488,14 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
                         "• Local events and festivals\n" +
                         "• Photo spots\n" +
                         "• Ideas on creating a perfect itinerary\n" +
-                        "Download our official ${destination.name} guidebook.",
+                        "Download our official ${destination.guidebook} guidebook.",
                 modifier = Modifier.padding(horizontal = 16.dp) // text padding inside the gray container
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TagsSection(destination)
+        TagsSection(destination, navController)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -505,7 +511,13 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        ExploreMoreSection(destination, allDestinations)
+        ExploreMoreSection(
+            destination,
+            allDestinations,
+            onDestinationClick = { id ->
+                navController.navigate("destination/$id")
+            }
+        )
 
     }
 }
@@ -561,7 +573,7 @@ fun DestinationSlider(icon: ImageVector, itemName: String, itemsCarousel: String
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TagsSection(destination: Destination) {
+fun TagsSection(destination: Destination, navController: NavHostController) {
 
     val tags = destination.tags.split(",")
 
@@ -573,7 +585,7 @@ fun TagsSection(destination: Destination) {
         "mountain" to "Mountain Hideaways",
         "food" to "Gourmet Trails",
         "landscape" to "Striking Landscapes",
-        "island" to "Charming Islands",
+        "island" to "Island Getaways",
         "christmas" to "Christmas Markets"
     )
 
@@ -586,7 +598,15 @@ fun TagsSection(destination: Destination) {
     ) {
         tags.forEach { tag ->
             val displayName = tagDisplayNames[tag.trim().lowercase()] ?: tag.trim().capitalize()
-            Tag(displayName, getTagColor(tag))
+            val mappedCategory = mapTagToCategory(tag.trim())
+
+            Button(
+                onClick = {
+                    navController.navigate("category/$mappedCategory")
+                }
+            ) {
+                Tag(displayName, getTagColor(tag))
+            }
         }
     }
 }
@@ -628,18 +648,20 @@ fun ShareButton() {
 
 @Composable
 fun SuggestedDestinationCard(
-    name: String,
-    imageRes: Int
+    destination: Destination,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .width(280.dp)
             .height(180.dp)
+            .clip(RoundedCornerShape(16.dp)) // important for ripple
+            .clickable { onClick() }
             //.padding(horizontal = 16.dp)
     ) {
         Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = name,
+            painter = painterResource(id = destination.imageRes),
+            contentDescription = destination.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
@@ -670,7 +692,7 @@ fun SuggestedDestinationCard(
                 .padding(horizontal = 12.dp, vertical = 6.dp) // inner padding
         ) {
             Text(
-                text = name,
+                text = destination.name,
                 color = Color.White,
                 fontSize = 16.sp
             )
@@ -681,7 +703,8 @@ fun SuggestedDestinationCard(
 @Composable
 fun ExploreMoreSection(
     currentDestination: Destination,
-    allDestinations: List<Destination>
+    allDestinations: List<Destination>,
+    onDestinationClick: (String) -> Unit
 ) {
     // More Like This
     val currentTags = currentDestination.tags.split(",").map { it.trim().lowercase() }
@@ -721,8 +744,10 @@ fun ExploreMoreSection(
             ) {
                 items(similarVibeDestinations) { destination ->
                     SuggestedDestinationCard(
-                        name = destination.name,
-                        imageRes = destination.imageRes
+                        destination = destination,
+                        onClick = {
+                            onDestinationClick(destination.id)
+                        }
                     )
                 }
             }
@@ -747,8 +772,10 @@ fun ExploreMoreSection(
             ) {
                 items(sameCountryDestinations) { destination ->
                     SuggestedDestinationCard(
-                        name = destination.name,
-                        imageRes = destination.imageRes
+                        destination = destination,
+                        onClick = {
+                            onDestinationClick(destination.id)
+                        }
                     )
                 }
             }
