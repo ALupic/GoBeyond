@@ -2,6 +2,7 @@ package com.example.gobeyond.ui.explore
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -46,13 +47,19 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
 import com.example.gobeyond.ui.model.Destination
 import kotlin.math.absoluteValue
 
 //@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun DestinationScreen(destination: Destination, allDestinations: List<Destination>) {
+fun DestinationScreen(
+    destination: Destination,
+    allDestinations: List<Destination>,
+    navController: NavHostController
+) {
 
     // Scrollable column
     Column(
@@ -324,10 +331,17 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
         val beachSection = "beach" in tags
         val foodSection = "food" in tags
 
+//NEW CODE
+        DestinationSlider(Icons.Default.DirectionsBike, "Activities", destination.activitiesCarousel);
 
+        Spacer(modifier = Modifier.height(32.dp))
 
+        if(foodSection){
+            DestinationSlider(Icons.Default.LocalPizza, "Local Flavors", destination.foodCarousel);
+        }
 
-        val context = LocalContext.current // <- get the context here
+//TO CHANGE
+/*        val context = LocalContext.current // <- get the context here
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -373,60 +387,6 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
         )
 
         Spacer(modifier = Modifier.height(32.dp))
-
-            /*Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            ) {
-                Icon(Icons.Default.DirectionsBike, contentDescription = null, tint = Color(0xFF09072F))
-                Spacer(Modifier.width(8.dp))
-                Text("Activities", style = MaterialTheme.typography.titleLarge)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            /*Text(
-                text = destination.mainText2,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )*/
-
-            val images = listOf(
-                destination.imageRes,
-                destination.imageRes
-            )
-
-            val texts = listOf(
-                destination.headText,
-                destination.headText
-            )
-
-            val cards = images.zip(texts)
-                .filter { (img, txt) ->
-                    img != 0 && txt.isNotBlank()
-                }
-
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(cards) { (image, text) ->
-
-                    InfoCard(
-                        description = text,
-                        imageRes = image
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Divider(
-                color = Color.LightGray,
-                thickness = 1.dp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))*/
 
 
         if (foodSection) {
@@ -475,6 +435,8 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
+*/
+        //TO CHANGE
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -526,14 +488,14 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
                         "• Local events and festivals\n" +
                         "• Photo spots\n" +
                         "• Ideas on creating a perfect itinerary\n" +
-                        "Download our official ${destination.name} guidebook.",
+                        "Download our official ${destination.guidebook} guidebook.",
                 modifier = Modifier.padding(horizontal = 16.dp) // text padding inside the gray container
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TagsSection(destination)
+        TagsSection(destination, navController)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -549,14 +511,69 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        ExploreMoreSection(destination, allDestinations)
+        ExploreMoreSection(
+            destination,
+            allDestinations,
+            onDestinationClick = { id ->
+                navController.navigate("destination/$id")
+            }
+        )
 
     }
 }
 
+//NEW
+@Composable
+fun DestinationSlider(icon: ImageVector, itemName: String, itemsCarousel: String){
+    val context = LocalContext.current // <- get the context here
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        Icon(icon, contentDescription = null, tint = Color(0xFF09072F))
+        Spacer(Modifier.width(8.dp))
+        Text(itemName, style = MaterialTheme.typography.titleLarge)
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    val foodItems: List<Pair<String, String>> = itemsCarousel
+        .split(";")
+        .mapNotNull { item ->
+            val parts = item.split("|")
+            if (parts.size == 2) {
+                val text = parts[0].trim()
+                val imageUrl = parts[1].trim()
+                text to imageUrl
+            } else null
+        }
+
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(foodItems) { item ->
+            val (text, imageUrl) = item
+            InfoCard(
+                description = text,
+                imageUrl = imageUrl
+            )
+        }
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Divider(
+        color = Color.LightGray,
+        thickness = 1.dp,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TagsSection(destination: Destination) {
+fun TagsSection(destination: Destination, navController: NavHostController) {
 
     val tags = destination.tags.split(",")
 
@@ -564,11 +581,11 @@ fun TagsSection(destination: Destination) {
         "beach" to "Astonishing Beaches",
         "old town" to "Timeless Towns",
         "ancient" to "Ancient Wonders",
-        "nature" to "Nature & Outdoors",
+        "fairytale" to "Fairytale Forts",
         "mountain" to "Mountain Hideaways",
         "food" to "Gourmet Trails",
         "landscape" to "Striking Landscapes",
-        "island" to "Charming Islands",
+        "island" to "Island Getaways",
         "christmas" to "Christmas Markets"
     )
 
@@ -581,7 +598,15 @@ fun TagsSection(destination: Destination) {
     ) {
         tags.forEach { tag ->
             val displayName = tagDisplayNames[tag.trim().lowercase()] ?: tag.trim().capitalize()
-            Tag(displayName, getTagColor(tag))
+            val mappedCategory = mapTagToCategory(tag.trim())
+
+            Button(
+                onClick = {
+                    navController.navigate("category/$mappedCategory")
+                }
+            ) {
+                Tag(displayName, getTagColor(tag))
+            }
         }
     }
 }
@@ -592,7 +617,7 @@ fun getTagColor(tag: String): Color {
             //.copy(alpha = 0.15f)
         "old town" -> Color(0xFF09072F)  // Brown
         "ancient" -> Color(0xFF09072F)
-        "nature" -> Color(0xFF09072F)    // Green
+        "fairytale" -> Color(0xFF09072F)    // Green
         "mountain" -> Color(0xFF09072F)  // Purple
         "food" -> Color(0xFF09072F)      // Red
         "landscape" -> Color(0xFF09072F)
@@ -623,18 +648,20 @@ fun ShareButton() {
 
 @Composable
 fun SuggestedDestinationCard(
-    name: String,
-    imageRes: Int
+    destination: Destination,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .width(280.dp)
             .height(180.dp)
+            .clip(RoundedCornerShape(16.dp)) // important for ripple
+            .clickable { onClick() }
             //.padding(horizontal = 16.dp)
     ) {
         Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = name,
+            painter = painterResource(id = destination.imageRes),
+            contentDescription = destination.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
@@ -665,7 +692,7 @@ fun SuggestedDestinationCard(
                 .padding(horizontal = 12.dp, vertical = 6.dp) // inner padding
         ) {
             Text(
-                text = name,
+                text = destination.name,
                 color = Color.White,
                 fontSize = 16.sp
             )
@@ -676,7 +703,8 @@ fun SuggestedDestinationCard(
 @Composable
 fun ExploreMoreSection(
     currentDestination: Destination,
-    allDestinations: List<Destination>
+    allDestinations: List<Destination>,
+    onDestinationClick: (String) -> Unit
 ) {
     // More Like This
     val currentTags = currentDestination.tags.split(",").map { it.trim().lowercase() }
@@ -716,8 +744,10 @@ fun ExploreMoreSection(
             ) {
                 items(similarVibeDestinations) { destination ->
                     SuggestedDestinationCard(
-                        name = destination.name,
-                        imageRes = destination.imageRes
+                        destination = destination,
+                        onClick = {
+                            onDestinationClick(destination.id)
+                        }
                     )
                 }
             }
@@ -742,8 +772,10 @@ fun ExploreMoreSection(
             ) {
                 items(sameCountryDestinations) { destination ->
                     SuggestedDestinationCard(
-                        name = destination.name,
-                        imageRes = destination.imageRes
+                        destination = destination,
+                        onClick = {
+                            onDestinationClick(destination.id)
+                        }
                     )
                 }
             }

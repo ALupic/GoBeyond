@@ -23,12 +23,14 @@ fun DestinationJson.toDestination(context: Context): Destination {
         imageUrl2 = imageUrl2,
         imageUrl3 = imageUrl3,
         tags = tags,
+        description = description,
         headText = headText,
         locationText = locationText,
         mainText1 = mainText1,
         mainText2 = mainText2,
         activitiesCarousel = activitiesCarousel,
         foodCarousel = foodCarousel,
-        goBeyondText = goBeyondText
+        goBeyondText = goBeyondText,
+        guidebook = guidebook
     )
 }

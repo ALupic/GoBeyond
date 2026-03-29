@@ -18,11 +18,11 @@ class CountryRepository(
     suspend fun seedCountriesIfEmpty() {
         val current = dao.getAllCountriesOnce()
         if (current.isEmpty()) {
-            dao.insert(Country("italy", "Italy"))
-            dao.insert(Country("greece", "Greece"))
-            dao.insert(Country("france", "France"))
-            dao.insert(Country("portugal", "Portugal"))
-            dao.insert(Country("spain", "Spain"))
+            dao.insert(Country("Italy", "Italy"))
+            dao.insert(Country("Greece", "Greece"))
+            dao.insert(Country("France", "France"))
+            dao.insert(Country("Portugal", "Portugal"))
+            dao.insert(Country("Spain", "Spain"))
         }
     }
 

@@ -98,11 +98,11 @@ fun CountryListScreen(
 @DrawableRes
 fun getCountryImage(countryId: String): Int{
     return when (countryId) {
-        "italy" -> R.drawable.ventimiglia
-        "greece" -> R.drawable.symi
-        "france" -> R.drawable.carcassonne
-        "spain" -> R.drawable.masca
-        "portugal" -> R.drawable.obidos
+        "Italy" -> R.drawable.ventimiglia
+        "Greece" -> R.drawable.symi
+        "France" -> R.drawable.carcassonne
+        "Spain" -> R.drawable.masca
+        "Portugal" -> R.drawable.obidos
         else -> R.drawable.ventimiglia
     }
 }
