@@ -3,6 +3,7 @@ package com.example.gobeyond.ui.explore
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,13 +27,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.gobeyond.ui.theme.GoBeyondTheme
 import com.example.gobeyond.R
+import com.example.gobeyond.ui.model.Category
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ExploreScreen(){
+fun ExploreScreen(navController: NavHostController){
 
     val pagerState = rememberPagerState(pageCount = { 2 })
     val scope = rememberCoroutineScope()
@@ -48,7 +51,7 @@ fun ExploreScreen(){
 
             when (page) {
                 0 -> DiscoverContent()
-                1 -> CategoriesContent()
+                1 -> CategoriesContent(navController = navController)
             }
         }
 
@@ -88,7 +91,8 @@ fun ExploreScreen(){
                             text = {
                                 Text(
                                     text = title,
-                                    color = Color.White
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.bodyLarge
                                 )
                             }
                         )
@@ -154,7 +158,19 @@ fun DiscoverContent() {
 }
 
 @Composable
-fun CategoriesContent() {
+fun CategoriesContent(navController: NavHostController) {
+    val categories = listOf(
+        Category("Astonishing Beaches", R.drawable.cat_beach),
+        Category("Mountain Hideaways", R.drawable.cat_mountain),
+        Category("Timeless Towns", R.drawable.cat_oldtown),
+        Category("Fairytale Forts", R.drawable.cat_fairytale),
+        Category("Ancient Wonders", R.drawable.cat_ancient),
+        Category("Gourmet Trails", R.drawable.cat_food),
+        Category("Striking Landscapes", R.drawable.cat_landscape),
+        Category("Charming Islands", R.drawable.cat_island),
+        Category("Christmas Markets", R.drawable.cat_christmas)
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -165,13 +181,50 @@ fun CategoriesContent() {
                 .fillMaxSize()
                 .padding(top = 100.dp)
         ) {
-            items(listOf("Beach Escapes", "Mountain Hideaways", "Timeless Towns", "Ancient Wonders", "Gourmet Trails", "Striking Landscapes", "Charming Islands", "Christmas Markets")) { category ->
-                Text(
-                    text = category,
-                    modifier = Modifier.padding(16.dp),
-                    color = Color.White
+            items(categories) { category ->
+                CategoryItem(
+                    category = category,
+                    onClick = {
+                        navController.navigate("category/${category.name}")
+                    }
                 )
             }
         }
+    }
+}
+
+@Composable
+fun CategoryItem(
+    category: Category,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(120.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .background(Color(0xFF0D0A43))
+            .clickable { onClick() }
+    ) {
+
+        // Category name (top-left)
+        Text(
+            text = category.name,
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
+        )
+
+        // Icon (bottom-right)
+        Image(
+            painter = painterResource(id = category.iconRes),
+            contentDescription = null,
+            modifier = Modifier
+                .size(150.dp)
+                .align(Alignment.BottomEnd)
+                //.padding(16.dp)
+        )
     }
 }

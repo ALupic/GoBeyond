@@ -37,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.gobeyond.ui.explore.CategoryScreen
 import com.example.gobeyond.ui.explore.ExploreScreen
 import com.example.gobeyond.ui.model.Destination
 
@@ -157,6 +158,22 @@ fun AppNavGraph(
             modifier = Modifier.padding(paddingValues)
         ) {
 
+            composable(
+                route = "category/{categoryName}",
+                arguments = listOf(navArgument("categoryName") { defaultValue = "" })
+            ) { backStackEntry ->
+                val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+                val context = LocalContext.current
+                val db = AppDatabaseProvider.createDatabase(context)
+                val repository = DestinationRepository(db.destinationDao(), context)
+
+                CategoryScreen(
+                    category = categoryName,
+                    navController = navController,
+                    repository = repository
+                )
+            }
+
             composable("countries") {
                 CountryListScreen(
                     viewModel = viewModel,
@@ -228,7 +245,7 @@ fun AppNavGraph(
             }
 
             composable("blog"){
-                ExploreScreen()
+                ExploreScreen(navController = navController)
             }
 
             composable("account"){

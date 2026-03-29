@@ -46,6 +46,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.example.gobeyond.ui.model.Destination
 import kotlin.math.absoluteValue
@@ -324,10 +325,17 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
         val beachSection = "beach" in tags
         val foodSection = "food" in tags
 
+//NEW CODE
+        DestinationSlider(Icons.Default.DirectionsBike, "Activities", destination.activitiesCarousel);
 
+        Spacer(modifier = Modifier.height(32.dp))
 
+        if(foodSection){
+            DestinationSlider(Icons.Default.LocalPizza, "Local Flavors", destination.foodCarousel);
+        }
 
-        val context = LocalContext.current // <- get the context here
+//TO CHANGE
+/*        val context = LocalContext.current // <- get the context here
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -373,60 +381,6 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
         )
 
         Spacer(modifier = Modifier.height(32.dp))
-
-            /*Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            ) {
-                Icon(Icons.Default.DirectionsBike, contentDescription = null, tint = Color(0xFF09072F))
-                Spacer(Modifier.width(8.dp))
-                Text("Activities", style = MaterialTheme.typography.titleLarge)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            /*Text(
-                text = destination.mainText2,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )*/
-
-            val images = listOf(
-                destination.imageRes,
-                destination.imageRes
-            )
-
-            val texts = listOf(
-                destination.headText,
-                destination.headText
-            )
-
-            val cards = images.zip(texts)
-                .filter { (img, txt) ->
-                    img != 0 && txt.isNotBlank()
-                }
-
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(cards) { (image, text) ->
-
-                    InfoCard(
-                        description = text,
-                        imageRes = image
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Divider(
-                color = Color.LightGray,
-                thickness = 1.dp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))*/
 
 
         if (foodSection) {
@@ -475,6 +429,8 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
+*/
+        //TO CHANGE
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -554,6 +510,55 @@ fun DestinationScreen(destination: Destination, allDestinations: List<Destinatio
     }
 }
 
+//NEW
+@Composable
+fun DestinationSlider(icon: ImageVector, itemName: String, itemsCarousel: String){
+    val context = LocalContext.current // <- get the context here
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        Icon(icon, contentDescription = null, tint = Color(0xFF09072F))
+        Spacer(Modifier.width(8.dp))
+        Text(itemName, style = MaterialTheme.typography.titleLarge)
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    val foodItems: List<Pair<String, String>> = itemsCarousel
+        .split(";")
+        .mapNotNull { item ->
+            val parts = item.split("|")
+            if (parts.size == 2) {
+                val text = parts[0].trim()
+                val imageUrl = parts[1].trim()
+                text to imageUrl
+            } else null
+        }
+
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(foodItems) { item ->
+            val (text, imageUrl) = item
+            InfoCard(
+                description = text,
+                imageUrl = imageUrl
+            )
+        }
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Divider(
+        color = Color.LightGray,
+        thickness = 1.dp,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TagsSection(destination: Destination) {
@@ -564,7 +569,7 @@ fun TagsSection(destination: Destination) {
         "beach" to "Astonishing Beaches",
         "old town" to "Timeless Towns",
         "ancient" to "Ancient Wonders",
-        "nature" to "Nature & Outdoors",
+        "fairytale" to "Fairytale Forts",
         "mountain" to "Mountain Hideaways",
         "food" to "Gourmet Trails",
         "landscape" to "Striking Landscapes",
@@ -592,7 +597,7 @@ fun getTagColor(tag: String): Color {
             //.copy(alpha = 0.15f)
         "old town" -> Color(0xFF09072F)  // Brown
         "ancient" -> Color(0xFF09072F)
-        "nature" -> Color(0xFF09072F)    // Green
+        "fairytale" -> Color(0xFF09072F)    // Green
         "mountain" -> Color(0xFF09072F)  // Purple
         "food" -> Color(0xFF09072F)      // Red
         "landscape" -> Color(0xFF09072F)
