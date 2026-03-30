@@ -519,6 +519,12 @@ fun DestinationScreen(
             }
         )
 
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .background(MaterialTheme.colorScheme.primary)
+        )
     }
 }
 

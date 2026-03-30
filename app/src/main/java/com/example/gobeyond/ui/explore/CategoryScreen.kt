@@ -65,6 +65,8 @@ fun CategoryScreen(
             .padding(horizontal = 16.dp)
     ) {
 
+        Spacer(modifier = Modifier.height(35.dp))
+
         Text(
             text = category,
             style = MaterialTheme.typography.headlineLarge.copy(
@@ -129,6 +131,8 @@ fun CategoryScreen(
                 Text("Next")
             }
         }
+
+        Spacer(modifier = Modifier.height(80.dp))
     }
 }
 
