@@ -28,9 +28,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.gobeyond.ui.theme.GoBeyondTheme
 import com.example.gobeyond.R
+import com.example.gobeyond.ui.data.components.DynamicSystemNavBarColor
 import com.example.gobeyond.ui.data.local.DestinationDao
 import com.example.gobeyond.ui.model.Category
 import com.example.gobeyond.ui.model.Destination
@@ -46,6 +48,11 @@ fun ExploreScreen(navController: NavHostController, destinationDao: DestinationD
     val scope = rememberCoroutineScope()
 
     val tabs = listOf("Discover", "Categories")
+
+    DynamicSystemNavBarColor(
+        color = Color.Transparent,
+        darkIcons = false
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -153,17 +160,20 @@ fun DiscoverContent(destinationDao: DestinationDao, navController: NavHostContro
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(24.dp)
+                    .padding(horizontal = 24.dp)
+                    .offset(y = (-135).dp) // shift the whole column 30.dp up
             ) {
                 Text("Explore", style = MaterialTheme.typography.bodyLarge, color = Color.White)
-                Text(dest.name, style = MaterialTheme.typography.headlineLarge, color = Color.White)
+                Text(dest.name, style = MaterialTheme.typography.headlineLarge.copy(lineHeight = 36.sp), color = Color.White)
                 Text(dest.description, style = MaterialTheme.typography.bodyLarge, color = Color.White)
             }
         }
     }
 }
 
-fun <T> List<T>.getDailyItem(): T {
+fun <T> List<T>.getDailyItem(): T? {
+    if (this.isEmpty()) return null
+
     val todaySeed = LocalDate.now().toEpochDay().toInt()
     val random = Random(todaySeed)
     return this[random.nextInt(this.size)]
@@ -191,7 +201,7 @@ fun CategoriesContent(navController: NavHostController) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 100.dp)
+                .padding(top = 100.dp, bottom = 135.dp)
         ) {
             items(categories) { category ->
                 CategoryItem(

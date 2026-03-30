@@ -39,7 +39,6 @@ class DestinationRepository(
         }
     }
 
-    // 🔥 CORE PART
     private fun loadFromJson(): List<Destination> {
         val json = context.assets.open("destinations.json")
             .bufferedReader()

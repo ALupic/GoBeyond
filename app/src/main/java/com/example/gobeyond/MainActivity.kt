@@ -24,6 +24,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.gobeyond.ui.data.AppDatabaseProvider
 import com.example.gobeyond.ui.data.CountryRepository
+import com.example.gobeyond.ui.data.DestinationRepository
 import com.example.gobeyond.ui.explore.CountryListScreen
 import com.example.gobeyond.ui.explore.CountryViewModel
 import com.example.gobeyond.ui.model.Country
@@ -44,12 +45,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val db = AppDatabaseProvider.createDatabase(applicationContext)
+
+        lifecycleScope.launch {
+            val repository = DestinationRepository(
+                db.destinationDao(),
+                applicationContext
+            )
+
+            repository.seedDestinationsIfEmpty()
+        }
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         WindowCompat.getInsetsController(window, window.decorView)
             .isAppearanceLightStatusBars = false
-
-        //val db = AppDatabaseProvider.createDatabase(applicationContext)
 
         MapLibre.getInstance(
             this,
@@ -57,10 +67,8 @@ class MainActivity : ComponentActivity() {
             WellKnownTileServer.MapLibre
         )
 
-
         setContent {
             GoBeyondTheme {
-                val db = AppDatabaseProvider.createDatabase(applicationContext)
                 val repository = CountryRepository(db.countryDao())
 
                 val navController = rememberNavController()

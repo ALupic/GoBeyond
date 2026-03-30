@@ -1,7 +1,13 @@
 package com.example.gobeyond.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -27,7 +33,7 @@ import com.example.gobeyond.ui.explore.DestinationViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +41,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gobeyond.ui.explore.CategoryScreen
@@ -51,111 +58,173 @@ fun AppNavGraph(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val showBottomBar = when {
+        currentRoute?.startsWith("destination/") == true -> false
+        currentRoute?.startsWith("category/") == true -> false
+        else -> true
+    }
+
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                //modifier = Modifier.height(115.dp),
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                NavigationBarItem(
-                    selected = currentRoute == "countries",
-                    onClick = {
-                        navController.navigate("countries"){
-                            popUpTo("countries") {inclusive = false}
-                            launchSingleTop = true
-                        }
-                    },
-                    label = {Text("Explore", style = MaterialTheme.typography.labelMedium)},
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "Explore"
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                        selectedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                        indicatorColor = MaterialTheme.colorScheme.secondary
-                    )
-                )
+            if (showBottomBar) {
+                NavigationBar(
+                    modifier = Modifier
+                        .padding(horizontal = 55.dp, vertical = 20.dp)
+                        .navigationBarsPadding() // float
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(28.dp)),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    tonalElevation = 6.dp
+                ) {
 
-                NavigationBarItem(
-                    selected = currentRoute == "location",
-                    onClick = {
-                        navController.navigate("location"){
-                            launchSingleTop = true
-                        }
-                    },
-                    label = {Text("Location", style = MaterialTheme.typography.labelMedium)},
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.LocationOn,
-                            contentDescription = "Location"
+                    NavigationBarItem(
+                        selected = currentRoute == "explore",
+                        onClick = {
+                            navController.navigate("explore") {
+                                launchSingleTop = true
+                            }
+                        },
+                        //label = {Text("Explore", style = MaterialTheme.typography.labelMedium)},
+                        icon = {
+                            Box(
+                                modifier = Modifier
+                                    .padding(6.dp) // uniform padding on all sides
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(
+                                        if (currentRoute == "explore") MaterialTheme.colorScheme.primary.copy(
+                                            alpha = 0f
+                                        )
+                                        else MaterialTheme.colorScheme.primary.copy(alpha = 0f) // invisible when not selected
+                                    )
+                                    .padding(8.dp) // inner padding for the icon inside the pill
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Search,
+                                    contentDescription = "Explore",
+                                    modifier = Modifier.size(if (currentRoute == "explore") 30.dp else 26.dp)
+                                )
+                            }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                            indicatorColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0f) // subtle pill indicator
                         )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                        selectedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                        indicatorColor = MaterialTheme.colorScheme.secondary
                     )
-                )
 
-                NavigationBarItem(
-                    selected = currentRoute == "blog",
-                    onClick = {
-                        navController.navigate("blog"){
-                            launchSingleTop = true
-                        }
-                    },
-                    label = {Text("Blog", style = MaterialTheme.typography.labelMedium)},
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Article,
-                            contentDescription = "Blog"
+                    NavigationBarItem(
+                        selected = currentRoute == "location",
+                        onClick = {
+                            navController.navigate("location") {
+                                launchSingleTop = true
+                            }
+                        },
+                        //label = {Text("Location", style = MaterialTheme.typography.labelMedium)},
+                        icon = {
+                            Box(
+                                modifier = Modifier
+                                    .padding(6.dp) // uniform padding on all sides
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(
+                                        if (currentRoute == "explore") MaterialTheme.colorScheme.primary.copy(
+                                            alpha = 0f
+                                        )
+                                        else MaterialTheme.colorScheme.primary.copy(alpha = 0f) // invisible when not selected
+                                    )
+                                    .padding(8.dp) // inner padding for the icon inside the pill
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.LocationOn,
+                                    contentDescription = "Location",
+                                    modifier = Modifier.size(if (currentRoute == "location") 30.dp else 26.dp)
+                                )
+                            }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                            indicatorColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0f)
                         )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                        selectedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                        indicatorColor = MaterialTheme.colorScheme.secondary
                     )
-                )
 
-                NavigationBarItem(
-                    selected = currentRoute == "account",
-                    onClick = {
-                        navController.navigate("account"){
-                            launchSingleTop = true
-                        }
-                    },
-                    label = {Text("Account", style = MaterialTheme.typography.labelMedium)},
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Person,
-                            contentDescription = "Account"
+                    NavigationBarItem(
+                        selected = currentRoute == "countries",
+                        onClick = {
+                            navController.navigate("countries") {
+                                popUpTo("countries") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
+                        //label = {Text("Countries", style = MaterialTheme.typography.labelMedium)},
+                        icon = {
+                            Box(
+                                modifier = Modifier
+                                    .padding(6.dp) // uniform padding on all sides
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(
+                                        if (currentRoute == "explore") MaterialTheme.colorScheme.primary.copy(
+                                            alpha = 0f
+                                        )
+                                        else MaterialTheme.colorScheme.primary.copy(alpha = 0f) // invisible when not selected
+                                    )
+                                    .padding(8.dp) // inner padding for the icon inside the pill
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Flag,
+                                    contentDescription = "Countries",
+                                    modifier = Modifier.size(if (currentRoute == "countries") 30.dp else 26.dp)
+                                )
+                            }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                            indicatorColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0f)
                         )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                        selectedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                        indicatorColor = MaterialTheme.colorScheme.secondary
                     )
-                )
+
+                    NavigationBarItem(
+                        selected = currentRoute == "account",
+                        onClick = {
+                            navController.navigate("account") {
+                                launchSingleTop = true
+                            }
+                        },
+                        //label = {Text("Account", style = MaterialTheme.typography.labelMedium)},
+                        icon = {
+                            Box(
+                                modifier = Modifier
+                                    .padding(6.dp) // uniform padding on all sides
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(
+                                        if (currentRoute == "explore") MaterialTheme.colorScheme.primary.copy(
+                                            alpha = 0f
+                                        )
+                                        else MaterialTheme.colorScheme.primary.copy(alpha = 0f) // invisible when not selected
+                                    )
+                                    .padding(8.dp) // inner padding for the icon inside the pill
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Person,
+                                    contentDescription = "Account",
+                                    modifier = Modifier.size(if (currentRoute == "account") 30.dp else 26.dp)
+                                )
+                            }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                            indicatorColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0f)
+                        )
+                    )
+                }
             }
         }
     ){ paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = "blog",
-            modifier = Modifier.padding(paddingValues)
+            startDestination = "explore",
+            modifier = Modifier.fillMaxSize()
         ) {
 
             composable(
@@ -174,13 +243,17 @@ fun AppNavGraph(
                 )
             }
 
-            composable("countries") {
-                CountryListScreen(
-                    viewModel = viewModel,
-                    onCountryClick = { countryId, countryName ->
-                        navController.navigate("destinations/$countryId/$countryName")
-                    }
-                )
+            composable("explore"){
+                    backStackEntry ->
+
+                //val id = backStackEntry.arguments?.getString("id") ?: ""
+
+                val context = LocalContext.current
+                val db = AppDatabaseProvider.createDatabase(context)
+                val destinationDao = db.destinationDao()
+                //val repository = DestinationRepository(db.destinationDao(), context)
+
+                ExploreScreen(navController = navController, destinationDao = destinationDao)
             }
 
             composable(
@@ -245,17 +318,13 @@ fun AppNavGraph(
                 Text("Location")
             }
 
-            composable("blog"){
-                    backStackEntry ->
-
-                //val id = backStackEntry.arguments?.getString("id") ?: ""
-
-                val context = LocalContext.current
-                val db = AppDatabaseProvider.createDatabase(context)
-                val destinationDao = db.destinationDao()
-                //val repository = DestinationRepository(db.destinationDao(), context)
-
-                ExploreScreen(navController = navController, destinationDao = destinationDao)
+            composable("countries") {
+                CountryListScreen(
+                    viewModel = viewModel,
+                    onCountryClick = { countryId, countryName ->
+                        navController.navigate("destinations/$countryId/$countryName")
+                    }
+                )
             }
 
             composable("account"){
