@@ -112,9 +112,9 @@ fun getCountryImage(countryId: String): Int{
 fun CountryListPreview() {
 
     val fakeCountries = listOf(
-        Country("italy", "Italy"),
-        Country("spain", "Spain"),
-        Country("france", "France")
+        Country("italy", "Italy", flagRes = R.drawable.gemsofeurope_dark),
+        Country("spain", "Spain", flagRes = R.drawable.gemsofeurope_dark),
+        Country("france", "France", flagRes = R.drawable.gemsofeurope_dark)
     )
 
     GoBeyondTheme {

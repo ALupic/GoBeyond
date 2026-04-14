@@ -25,6 +25,9 @@ interface DestinationDao {
     @Query("SELECT * FROM destinations")
     suspend fun getAllDestinations(): List<Destination>
 
+    @Query("SELECT * FROM destinations WHERE guidebook = :guidebook")
+    suspend fun getAllDestinationsByGuidebook(guidebook: String): List<Destination>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(destinations: List<Destination>)
 }
