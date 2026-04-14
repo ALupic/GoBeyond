@@ -22,7 +22,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = DarkBlue,
+    primary = WhiteBackground,
     background = WhiteBackground,
     surface = WhiteBackground,
 
@@ -52,4 +52,5 @@ fun GoBeyondTheme(
       typography = Typography,
       content = content
     )
+
 }

@@ -30,6 +30,10 @@ class DestinationRepository(
         return dao.getAllDestinations()
     }
 
+    suspend fun getDestinationByGuidebook(guidebook: String): Destination {
+        return dao.getDestinationById(guidebook)
+    }
+
     suspend fun seedDestinationsIfEmpty() {
         val current = dao.getAllDestinations()
 

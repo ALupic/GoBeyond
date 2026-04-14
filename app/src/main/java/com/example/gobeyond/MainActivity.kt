@@ -70,16 +70,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             GoBeyondTheme {
                 val repository = CountryRepository(db.countryDao())
-
                 val navController = rememberNavController()
-
-                val viewModel = remember {
-                    CountryViewModel(repository)
-                }
+                val viewModel = remember { CountryViewModel(repository) }
 
                 AppNavGraph(
                     navController = navController,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    countryDao = db.countryDao(),
+                    destinationDao = db.destinationDao()
                 )
             }
         }

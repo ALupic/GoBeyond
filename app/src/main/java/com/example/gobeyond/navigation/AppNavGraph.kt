@@ -44,6 +44,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.gobeyond.ui.data.local.CountryDao
+import com.example.gobeyond.ui.data.local.DestinationDao
 import com.example.gobeyond.ui.explore.CategoryScreen
 import com.example.gobeyond.ui.explore.ExploreScreen
 import com.example.gobeyond.ui.model.Destination
@@ -52,7 +54,9 @@ import com.example.gobeyond.ui.model.Destination
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
-    viewModel: CountryViewModel
+    viewModel: CountryViewModel,
+    countryDao: CountryDao,
+    destinationDao: DestinationDao
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -224,7 +228,8 @@ fun AppNavGraph(
         NavHost(
             navController = navController,
             startDestination = "explore",
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+
         ) {
 
             composable(
@@ -233,8 +238,8 @@ fun AppNavGraph(
             ) { backStackEntry ->
                 val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
                 val context = LocalContext.current
-                val db = AppDatabaseProvider.createDatabase(context)
-                val repository = DestinationRepository(db.destinationDao(), context)
+                //val db = AppDatabaseProvider.createDatabase(context)
+                val repository = DestinationRepository(destinationDao, context)
 
                 CategoryScreen(
                     category = categoryName,
@@ -249,11 +254,11 @@ fun AppNavGraph(
                 //val id = backStackEntry.arguments?.getString("id") ?: ""
 
                 val context = LocalContext.current
-                val db = AppDatabaseProvider.createDatabase(context)
-                val destinationDao = db.destinationDao()
+                //val db = AppDatabaseProvider.createDatabase(context)
+                //val destinationDao = db.destinationDao()
                 //val repository = DestinationRepository(db.destinationDao(), context)
 
-                ExploreScreen(navController = navController, destinationDao = destinationDao)
+                ExploreScreen(navController = navController, countryDao, destinationDao)
             }
 
             composable(
@@ -268,8 +273,8 @@ fun AppNavGraph(
                 val countryName = backStackEntry.arguments?.getString("countryName") ?: ""
 
                 val context = LocalContext.current
-                val db = AppDatabaseProvider.createDatabase(context)
-                val repository = DestinationRepository(db.destinationDao(), context)
+                //val db = AppDatabaseProvider.createDatabase(context)
+                val repository = DestinationRepository(destinationDao, context)
 
                 val viewModel = remember(countryId) {
                     DestinationViewModel(repository, countryId)
@@ -294,8 +299,8 @@ fun AppNavGraph(
                 val id = backStackEntry.arguments?.getString("id") ?: ""
 
                 val context = LocalContext.current
-                val db = AppDatabaseProvider.createDatabase(context)
-                val repository = DestinationRepository(db.destinationDao(), context)
+                //val db = AppDatabaseProvider.createDatabase(context)
+                val repository = DestinationRepository(destinationDao, context)
 
                 var destination by remember { mutableStateOf<Destination?>(null) }
                 var allDestinations by remember { mutableStateOf<List<Destination>>(emptyList()) }

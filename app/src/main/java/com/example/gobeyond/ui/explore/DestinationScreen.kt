@@ -713,12 +713,23 @@ fun ExploreMoreSection(
     onDestinationClick: (String) -> Unit
 ) {
     // More Like This
-    val currentTags = currentDestination.tags.split(",").map { it.trim().lowercase() }
+    val currentTags = currentDestination.tags
+        .split(",")
+        .map { it.trim().lowercase() }
+        .take(2)
+
     val similarVibeDestinations = allDestinations
-        .filter { it.id != currentDestination.id } // exclude current
-        .filter { dest -> dest.tags.split(",").any { it.trim().lowercase() in currentTags } }
+        .filter { it.id != currentDestination.id }
+        .filter { dest ->
+            val destTags = dest.tags
+                .split(",")
+                .map { it.trim().lowercase() }
+                .take(2)
+
+            destTags.any { it in currentTags }
+        }
         .shuffled()
-        .take(2) // max 2
+        .take(2)
 
     // Same country
     val sameCountryDestinations = allDestinations
@@ -825,7 +836,7 @@ fun InfoCard(
 
         Column(modifier = Modifier.padding(2.dp)) {
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = description, maxLines = 16)
+            Text(text = description, maxLines = 25)
         }
     }
 }
