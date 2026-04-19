@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -49,7 +50,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     // Jetpack Compose Navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation(libs.androidx.material3) // latest 2026-compatible version
+    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -78,4 +79,6 @@ dependencies {
     implementation("androidx.room:room-runtime:2.7.0")
     implementation("androidx.room:room-ktx:2.7.0")
     ksp("androidx.room:room-compiler:2.7.0")
+
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
 }
