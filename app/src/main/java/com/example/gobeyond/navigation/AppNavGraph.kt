@@ -44,6 +44,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.gobeyond.ui.auth.AuthState
+import com.example.gobeyond.ui.auth.AuthViewModel
+import com.example.gobeyond.ui.auth.LoginScreen
+import com.example.gobeyond.ui.auth.ProfileScreen
+import com.example.gobeyond.ui.auth.RegisterScreen
 import com.example.gobeyond.ui.data.local.CountryDao
 import com.example.gobeyond.ui.data.local.DestinationDao
 import com.example.gobeyond.ui.explore.CategoryScreen
@@ -58,6 +63,9 @@ fun AppNavGraph(
     countryDao: CountryDao,
     destinationDao: DestinationDao
 ) {
+
+    val authViewModel: AuthViewModel = viewModel()
+    val authState = authViewModel.authState.value
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -190,8 +198,14 @@ fun AppNavGraph(
                     NavigationBarItem(
                         selected = currentRoute == "account",
                         onClick = {
-                            navController.navigate("account") {
-                                launchSingleTop = true
+                            if (authState is AuthState.Authenticated) {
+                                navController.navigate("profile") {
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                navController.navigate("register") {
+                                    launchSingleTop = true
+                                }
                             }
                         },
                         //label = {Text("Account", style = MaterialTheme.typography.labelMedium)},
@@ -332,8 +346,31 @@ fun AppNavGraph(
                 )
             }
 
-            composable("account"){
-                Text("Account")
+            composable("login") {
+                LoginScreen(
+                    viewModel = authViewModel,
+                    onNavigateToRegister = {
+                        navController.navigate("register")
+                    },
+                    onLoginSuccess = {
+                        navController.navigate("profile") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable("register") {
+                RegisterScreen(
+                    viewModel = authViewModel,
+                    onNavigateToLogin = {
+                        navController.navigate("login")
+                    }
+                )
+            }
+
+            composable("profile") {
+                ProfileScreen(authViewModel)
             }
 
         }
