@@ -8,6 +8,8 @@ sealed class AuthState {
     object Loading : AuthState()
     object Unauthenticated : AuthState()
     data class Authenticated(val userId: String) : AuthState()
+
+    data class Error(val message: String) : AuthState()
 }
 
 class AuthViewModel : ViewModel() {
@@ -41,12 +43,27 @@ class AuthViewModel : ViewModel() {
     }
 
     fun register(email: String, password: String) {
+        if (email.isBlank() || password.isBlank()) {
+            authState.value = AuthState.Error("Email and password must not be empty")
+            return
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            authState.value = AuthState.Error("Invalid email format")
+            return
+        }
+
+        if (password.length < 6) {
+            authState.value = AuthState.Error("Password must be at least 6 characters")
+            return
+        }
+
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 authState.value = AuthState.Authenticated(it.user!!.uid)
             }
             .addOnFailureListener {
-                authState.value = AuthState.Unauthenticated
+                authState.value = AuthState.Error(it.message ?: "Registration failed")
             }
     }
 

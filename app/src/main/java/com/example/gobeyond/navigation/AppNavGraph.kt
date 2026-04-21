@@ -370,7 +370,14 @@ fun AppNavGraph(
             }
 
             composable("profile") {
-                ProfileScreen(authViewModel)
+                ProfileScreen(
+                    viewModel = authViewModel,
+                    onLogout = {
+                        navController.navigate("login") {
+                            popUpTo("profile") { inclusive = true }
+                        }
+                    }
+                )
             }
 
         }

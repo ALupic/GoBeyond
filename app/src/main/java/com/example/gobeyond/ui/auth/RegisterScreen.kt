@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -37,6 +39,14 @@ fun RegisterScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val authState = viewModel.authState.value
+
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Authenticated) {
+            onNavigateToLogin()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -74,6 +84,16 @@ fun RegisterScreen(
                 color = MaterialTheme.colorScheme.primary
             )
 
+            if (authState is AuthState.Error) {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = authState.message,
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
@@ -82,7 +102,14 @@ fun RegisterScreen(
                 label = { Text("Email") },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.primary,
+
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -94,7 +121,14 @@ fun RegisterScreen(
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.primary,
+
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                )
             )
 
             Spacer(modifier = Modifier.height(24.dp))
