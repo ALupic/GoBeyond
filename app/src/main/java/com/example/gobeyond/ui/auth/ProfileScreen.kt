@@ -37,6 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.gobeyond.ui.explore.SavedPlacesViewModel
 
 
 @Composable
@@ -56,6 +58,14 @@ fun ProfileScreen(
             onLogout()
         }
     }
+
+    val savedViewModel: SavedPlacesViewModel = viewModel()
+
+    LaunchedEffect(Unit) {
+        savedViewModel.observeSavedPlaces()
+    }
+
+    val savedIds = savedViewModel.savedPlaces.value
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -171,28 +181,37 @@ fun ProfileScreen(
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = if (selectedTab == 0)
-                            "No visited places yet"
-                        else
-                            "No saved places yet",
-                        color = Color.Gray
-                    )
-                }
 
-                /*Button(
-                    onClick = { viewModel.logout() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    shape = RoundedCornerShape(14.dp)
-                ) {
-                    Text("Log Out")
-                }*/
+                    when (selectedTab) {
+                        0 -> {
+                            Text(
+                                text = "No visited places yet",
+                                color = Color.Gray
+                            )
+                        }
+
+                        1 -> {
+                            if (savedIds.isEmpty()) {
+                                Text(
+                                    text = "No saved places yet",
+                                    color = Color.Gray
+                                )
+                            } else {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    savedIds.forEach { id ->
+                                        Text(
+                                            text = id,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
