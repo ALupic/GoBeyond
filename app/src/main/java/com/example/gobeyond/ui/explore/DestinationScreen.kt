@@ -1,5 +1,6 @@
 package com.example.gobeyond.ui.explore
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +32,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
@@ -40,6 +42,10 @@ import androidx.compose.material.icons.filled.Flight
 import androidx.compose.material.icons.filled.LocalPizza
 import androidx.compose.material.icons.filled.DirectionsBike
 import androidx.compose.material.icons.filled.TravelExplore
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -93,6 +99,51 @@ fun DestinationScreen(
                         )
                     )
             )
+
+            // Top right options
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 40.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+
+                // Visited circle
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Flag,
+                        contentDescription = "Visited",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                // Save circle
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.BookmarkBorder,
+                        contentDescription = "Save",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
 
             // Destination name
             Text(
@@ -502,12 +553,23 @@ fun DestinationScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-
-            contentAlignment = Alignment.BottomStart
+                .padding(horizontal = 16.dp)
         ) {
-            ShareButton()
+            Row(
+                modifier = Modifier.align(Alignment.BottomStart)
+            ) {
+                ShareButton()
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                VisitedButton()
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                SaveButton()
+            }
         }
+
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -637,18 +699,104 @@ fun getTagColor(tag: String): Color {
 fun ShareButton() {
     Button(
         onClick = { /* TO DO */ },
-        modifier = Modifier
-            .size(64.dp), // square button
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.White
+            containerColor = Color.White,
+            contentColor = MaterialTheme.colorScheme.primary
         ),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+        contentPadding = PaddingValues(12.dp),
+        modifier = Modifier.size(width = 80.dp, height = 80.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.Share,
-            contentDescription = "Share"
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Share,
+                contentDescription = "Share",
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Text(
+                text = "Share",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
+
+@Composable
+fun VisitedButton() {
+    Button(
+        onClick = { /* TO DO */ },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = MaterialTheme.colorScheme.primary
+        ),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+        contentPadding = PaddingValues(12.dp),
+        modifier = Modifier.size(width = 80.dp, height = 80.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Flag,
+                contentDescription = "Visited",
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Text(
+                text = "Visited",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
+
+@Composable
+fun SaveButton() {
+    Button(
+        onClick = { /* TO DO */ },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = MaterialTheme.colorScheme.primary
+        ),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+        contentPadding = PaddingValues(12.dp),
+        modifier = Modifier.size(width = 80.dp, height = 80.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Bookmark,
+                contentDescription = "Save",
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Text(
+                text = "Save",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
 

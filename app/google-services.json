@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "592942474076",
+    "project_id": "gobeyond-727f7",
+    "storage_bucket": "gobeyond-727f7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592942474076:android:909dc627ef698f7d281799",
+        "android_client_info": {
+          "package_name": "com.example.gobeyond"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUp64rfNiweTeTXzpZZIj2Jnf6DutFNDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
