@@ -51,6 +51,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -64,8 +66,25 @@ import kotlin.math.absoluteValue
 fun DestinationScreen(
     destination: Destination,
     allDestinations: List<Destination>,
-    navController: NavHostController
+    navController: NavHostController,
+    visitedPlacesViewModel: VisitedPlacesViewModel,
+    savedPlacesViewModel: SavedPlacesViewModel
 ) {
+
+    // Load visited and saved destinations on startup
+    LaunchedEffect(Unit) {
+        visitedPlacesViewModel.observeVisitedPlaces()
+    }
+
+    LaunchedEffect(Unit) {
+        savedPlacesViewModel.observeSavedPlaces()
+    }
+
+    val visitedIds by visitedPlacesViewModel.visitedPlaces
+    val isVisited = visitedIds.contains(destination.id)
+
+    val savedIds by savedPlacesViewModel.savedPlaces
+    val isSaved = savedIds.contains(destination.id)
 
     // Scrollable column
     Column(
@@ -115,13 +134,22 @@ fun DestinationScreen(
                         .background(
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape
-                        ),
+                        )
+                        .clickable {
+                            visitedPlacesViewModel.togglePlace(destination.id)
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.Flag,
+                        imageVector = if (isVisited)
+                            Icons.Default.Flag
+                        else
+                            Icons.Outlined.Flag,
                         contentDescription = "Visited",
-                        tint = Color.White,
+                        tint = if (isVisited)
+                            Color(0xFFFFC107)
+                        else
+                            Color.White,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -130,16 +158,26 @@ fun DestinationScreen(
                 Box(
                     modifier = Modifier
                         .size(40.dp)
+                        .clip(CircleShape)
                         .background(
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape
-                        ),
+                        )
+                        .clickable {
+                            savedPlacesViewModel.togglePlace(destination.id)
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.BookmarkBorder,
+                        imageVector = if (isSaved)
+                            Icons.Default.Bookmark
+                        else
+                            Icons.Outlined.BookmarkBorder,
                         contentDescription = "Save",
-                        tint = Color.White,
+                        tint = if (isSaved)
+                            Color(0xFFFFC107)
+                        else
+                            Color.White,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -165,25 +203,6 @@ fun DestinationScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-
-        //TagsSection(destination)
-
-        //Spacer(modifier = Modifier.height(16.dp))
-
-        /*Card(
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFF8F8F8)
-            ),
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = destination.headText,
-                modifier = Modifier.padding(16.dp)
-            )
-        }*/
 
         Text(
             text = destination.headText,
@@ -262,21 +281,6 @@ fun DestinationScreen(
             text = destination.mainText1,
             modifier = Modifier.padding(16.dp)
         )
-
-        /*Card(
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFF8F8F8)
-            ),
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = destination.mainText1,
-                modifier = Modifier.padding(16.dp)
-            )
-        }*/
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -382,7 +386,6 @@ fun DestinationScreen(
         val beachSection = "beach" in tags
         val foodSection = "food" in tags
 
-//NEW CODE
         DestinationSlider(Icons.Default.DirectionsBike, "Activities", destination.activitiesCarousel);
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -391,111 +394,7 @@ fun DestinationScreen(
             DestinationSlider(Icons.Default.LocalPizza, "Local Flavors", destination.foodCarousel);
         }
 
-//TO CHANGE
-/*        val context = LocalContext.current // <- get the context here
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Icon(Icons.Default.DirectionsBike, contentDescription = null, tint = Color(0xFF09072F))
-            Spacer(Modifier.width(8.dp))
-            Text("Activities", style = MaterialTheme.typography.titleLarge)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        val foodItems: List<Pair<String, String>> = destination.activitiesCarousel
-            .split(";")
-            .mapNotNull { item ->
-                val parts = item.split("|")
-                if (parts.size == 2) {
-                    val text = parts[0].trim()
-                    val imageUrl = parts[1].trim()
-                    text to imageUrl
-                } else null
-            }
-
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(foodItems) { item ->
-                val (text, imageUrl) = item
-                InfoCard(
-                    description = text,
-                    imageUrl = imageUrl
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Divider(
-            color = Color.LightGray,
-            thickness = 1.dp,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-
         Spacer(modifier = Modifier.height(32.dp))
-
-
-        if (foodSection) {
-            val context = LocalContext.current // <- get the context here
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            ) {
-                Icon(Icons.Default.LocalPizza, contentDescription = null, tint = Color(0xFF09072F))
-                Spacer(Modifier.width(8.dp))
-                Text("Local Flavors", style = MaterialTheme.typography.titleLarge)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            val foodItems: List<Pair<String, String>> = destination.foodCarousel
-                .split(";")
-                .mapNotNull { item ->
-                    val parts = item.split("|")
-                    if (parts.size == 2) {
-                        val text = parts[0].trim()
-                        val imageUrl = parts[1].trim()
-                        text to imageUrl
-                    } else null
-                }
-
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(foodItems) { item ->
-                    val (text, imageUrl) = item
-                    InfoCard(
-                        description = text,
-                        imageUrl = imageUrl
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Divider(
-                color = Color.LightGray,
-                thickness = 1.dp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-        }
-*/
-        //TO CHANGE
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        /*Text(
-            text = "Go Beyond",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )*/
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -562,11 +461,21 @@ fun DestinationScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                VisitedButton()
+                VisitedButton(
+                    isVisited = isVisited,
+                    onClick = {
+                        visitedPlacesViewModel.togglePlace(destination.id)
+                    }
+                )
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                SaveButton()
+                SaveButton(
+                    isSaved = isSaved,
+                    onClick = {
+                        savedPlacesViewModel.togglePlace(destination.id)
+                    }
+                )
             }
         }
 
@@ -731,12 +640,27 @@ fun ShareButton() {
 }
 
 @Composable
-fun VisitedButton() {
+fun VisitedButton(
+    isVisited: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = if (isVisited) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        Color.White
+    }
+
+    val contentColor = if (isVisited) {
+        Color.White
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+
     Button(
-        onClick = { /* TO DO */ },
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = MaterialTheme.colorScheme.primary
+            containerColor = backgroundColor,
+            contentColor = contentColor
         ),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
@@ -748,10 +672,13 @@ fun VisitedButton() {
             verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Flag,
+                imageVector = if (isVisited)
+                    Icons.Default.Flag
+                else
+                    Icons.Outlined.Flag,
                 contentDescription = "Visited",
                 modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = contentColor
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -759,19 +686,34 @@ fun VisitedButton() {
             Text(
                 text = "Visited",
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = contentColor
             )
         }
     }
 }
 
 @Composable
-fun SaveButton() {
+fun SaveButton(
+    isSaved: Boolean,
+    onClick: () -> Unit
+){
+    val backgroundColor = if (isSaved) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        Color.White
+    }
+
+    val contentColor = if (isSaved) {
+        Color.White
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+
     Button(
-        onClick = { /* TO DO */ },
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = MaterialTheme.colorScheme.primary
+            containerColor = backgroundColor,
+            contentColor = contentColor
         ),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
@@ -783,18 +725,21 @@ fun SaveButton() {
             verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Bookmark,
+                imageVector = if (isSaved)
+                    Icons.Default.Bookmark
+                else
+                    Icons.Outlined.BookmarkBorder,
                 contentDescription = "Save",
                 modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = contentColor
             )
 
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Save",
+                text = if (isSaved) "Saved" else "Save",
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = contentColor
             )
         }
     }
