@@ -54,6 +54,7 @@ import com.example.gobeyond.ui.data.local.DestinationDao
 import com.example.gobeyond.ui.explore.CategoryScreen
 import com.example.gobeyond.ui.explore.ExploreScreen
 import com.example.gobeyond.ui.explore.SavedPlacesViewModel
+import com.example.gobeyond.ui.explore.VisitedPlacesViewModel
 import com.example.gobeyond.ui.model.Destination
 
 
@@ -71,6 +72,7 @@ fun AppNavGraph(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val visitedPlacesViewModel: VisitedPlacesViewModel = viewModel()
     val savedPlacesViewModel: SavedPlacesViewModel = viewModel()
 
     val showBottomBar = when {
@@ -332,6 +334,7 @@ fun AppNavGraph(
                         destination = dest,
                         allDestinations = allDestinations, // <-- pass full database
                         navController = navController,
+                        visitedPlacesViewModel = visitedPlacesViewModel,
                         savedPlacesViewModel = savedPlacesViewModel
                     )
                 }
@@ -380,7 +383,9 @@ fun AppNavGraph(
                         navController.navigate("login") {
                             popUpTo("profile") { inclusive = true }
                         }
-                    }
+                    },
+                    navController = navController,
+                    destinationDao = destinationDao
                 )
             }
 

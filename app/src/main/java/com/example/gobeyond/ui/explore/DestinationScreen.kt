@@ -67,13 +67,21 @@ fun DestinationScreen(
     destination: Destination,
     allDestinations: List<Destination>,
     navController: NavHostController,
+    visitedPlacesViewModel: VisitedPlacesViewModel,
     savedPlacesViewModel: SavedPlacesViewModel
 ) {
 
-    // Load saved destinations on startup
+    // Load visited and saved destinations on startup
+    LaunchedEffect(Unit) {
+        visitedPlacesViewModel.observeVisitedPlaces()
+    }
+
     LaunchedEffect(Unit) {
         savedPlacesViewModel.observeSavedPlaces()
     }
+
+    val visitedIds by visitedPlacesViewModel.visitedPlaces
+    val isVisited = visitedIds.contains(destination.id)
 
     val savedIds by savedPlacesViewModel.savedPlaces
     val isSaved = savedIds.contains(destination.id)
@@ -126,13 +134,22 @@ fun DestinationScreen(
                         .background(
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape
-                        ),
+                        )
+                        .clickable {
+                            visitedPlacesViewModel.togglePlace(destination.id)
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.Flag,
+                        imageVector = if (isVisited)
+                            Icons.Default.Flag
+                        else
+                            Icons.Outlined.Flag,
                         contentDescription = "Visited",
-                        tint = Color.White,
+                        tint = if (isVisited)
+                            Color(0xFFFFC107)
+                        else
+                            Color.White,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -369,7 +386,6 @@ fun DestinationScreen(
         val beachSection = "beach" in tags
         val foodSection = "food" in tags
 
-//NEW CODE
         DestinationSlider(Icons.Default.DirectionsBike, "Activities", destination.activitiesCarousel);
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -445,7 +461,12 @@ fun DestinationScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                VisitedButton()
+                VisitedButton(
+                    isVisited = isVisited,
+                    onClick = {
+                        visitedPlacesViewModel.togglePlace(destination.id)
+                    }
+                )
 
                 Spacer(modifier = Modifier.width(12.dp))
 
@@ -619,12 +640,27 @@ fun ShareButton() {
 }
 
 @Composable
-fun VisitedButton() {
+fun VisitedButton(
+    isVisited: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = if (isVisited) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        Color.White
+    }
+
+    val contentColor = if (isVisited) {
+        Color.White
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+
     Button(
-        onClick = { /* TO DO */ },
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = MaterialTheme.colorScheme.primary
+            containerColor = backgroundColor,
+            contentColor = contentColor
         ),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
@@ -636,10 +672,13 @@ fun VisitedButton() {
             verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Flag,
+                imageVector = if (isVisited)
+                    Icons.Default.Flag
+                else
+                    Icons.Outlined.Flag,
                 contentDescription = "Visited",
                 modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = contentColor
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -647,7 +686,7 @@ fun VisitedButton() {
             Text(
                 text = "Visited",
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = contentColor
             )
         }
     }
